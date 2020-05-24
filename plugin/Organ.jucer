@@ -6,7 +6,53 @@
               pluginManufacturerCode="Soca" pluginCode="SLor" pluginAUMainType="'aumu'"
               cppLanguageStandard="latest" pluginChannelConfigs="{0,2}" version="0.0.1">
   <MAINGROUP id="Hs1HPA" name="Organ">
+    <GROUP id="{64226C5F-B1F9-A1D8-F7EC-41424754AED6}" name="setBfree">
+      <GROUP id="{07FD6E67-E9A2-6D1C-92FF-63743A79E24F}" name="b_whirl">
+        <FILE id="NZYc4g" name="eqcomp.c" compile="1" resource="0" file="setBfree/b_whirl/eqcomp.c"/>
+        <FILE id="RSsqsZ" name="eqcomp.h" compile="0" resource="0" file="setBfree/b_whirl/eqcomp.h"/>
+        <FILE id="mITY96" name="whirl.c" compile="1" resource="0" file="setBfree/b_whirl/whirl.c"/>
+        <FILE id="qMwpCw" name="whirl.h" compile="0" resource="0" file="setBfree/b_whirl/whirl.h"/>
+      </GROUP>
+      <GROUP id="{48256758-9768-EC24-32E9-AC6A13BEF1FB}" name="b_reverb">
+        <FILE id="IErREs" name="reverb.c" compile="1" resource="0" file="setBfree/b_reverb/reverb.c"/>
+        <FILE id="XRPHvZ" name="reverb.h" compile="0" resource="0" file="setBfree/b_reverb/reverb.h"/>
+      </GROUP>
+      <GROUP id="{66B60AB1-3111-6822-61D9-B897DFB1D195}" name="b_overdrive">
+        <FILE id="qg1It5" name="filterTools.c" compile="1" resource="0" file="setBfree/b_overdrive/filterTools.c"/>
+        <FILE id="giNytz" name="filterTools.h" compile="0" resource="0" file="setBfree/b_overdrive/filterTools.h"/>
+        <FILE id="JEnXlF" name="overdrive.c" compile="1" resource="0" file="setBfree/b_overdrive/overdrive.c"/>
+        <FILE id="oEPWRA" name="overdrive.h" compile="0" resource="0" file="setBfree/b_overdrive/overdrive.h"/>
+      </GROUP>
+      <GROUP id="{46E1199A-9569-4016-DF2F-8CD2BDD4DB92}" name="src">
+        <FILE id="yjxZfv" name="cfgParser.c" compile="1" resource="0" file="setBfree/src/cfgParser.c"/>
+        <FILE id="JAbyos" name="cfgParser.h" compile="0" resource="0" file="setBfree/src/cfgParser.h"/>
+        <FILE id="yx1WoA" name="defaultpgm.h" compile="0" resource="0" file="setBfree/src/defaultpgm.h"/>
+        <FILE id="zAblqW" name="global_inst.h" compile="0" resource="0" file="setBfree/src/global_inst.h"/>
+        <FILE id="mBjwR9" name="main.c" compile="0" resource="0" file="setBfree/src/main.c"/>
+        <FILE id="FZzPn5" name="main.h" compile="0" resource="0" file="setBfree/src/main.h"/>
+        <FILE id="hkqc7s" name="memstream.c" compile="1" resource="0" file="setBfree/src/memstream.c"/>
+        <FILE id="sMIUKR" name="memstream.h" compile="0" resource="0" file="setBfree/src/memstream.h"/>
+        <FILE id="Lstnys" name="midi.c" compile="1" resource="0" file="setBfree/src/midi.c"/>
+        <FILE id="NkB5Pf" name="midi.h" compile="0" resource="0" file="setBfree/src/midi.h"/>
+        <FILE id="Y5xmBF" name="midi_aseq.c" compile="1" resource="0" file="setBfree/src/midi_aseq.c"/>
+        <FILE id="CRRxf7" name="midi_aseq.h" compile="0" resource="0" file="setBfree/src/midi_aseq.h"/>
+        <FILE id="OdB564" name="midi_types.h" compile="0" resource="0" file="setBfree/src/midi_types.h"/>
+        <FILE id="mJGmLf" name="midnam.c" compile="1" resource="0" file="setBfree/src/midnam.c"/>
+        <FILE id="DRHbgf" name="pgmParser.c" compile="1" resource="0" file="setBfree/src/pgmParser.c"/>
+        <FILE id="fPtMsw" name="pgmParser.h" compile="0" resource="0" file="setBfree/src/pgmParser.h"/>
+        <FILE id="it7MwQ" name="program.c" compile="1" resource="0" file="setBfree/src/program.c"/>
+        <FILE id="CA1as0" name="program.h" compile="0" resource="0" file="setBfree/src/program.h"/>
+        <FILE id="h01OHa" name="state.c" compile="1" resource="0" file="setBfree/src/state.c"/>
+        <FILE id="OhkYxU" name="state.h" compile="0" resource="0" file="setBfree/src/state.h"/>
+        <FILE id="PTfRac" name="tonegen.c" compile="1" resource="0" file="setBfree/src/tonegen.c"/>
+        <FILE id="lwrWl9" name="tonegen.h" compile="0" resource="0" file="setBfree/src/tonegen.h"/>
+        <FILE id="eda900" name="vibrato.c" compile="1" resource="0" file="setBfree/src/vibrato.c"/>
+        <FILE id="qdy2Bp" name="vibrato.h" compile="0" resource="0" file="setBfree/src/vibrato.h"/>
+      </GROUP>
+    </GROUP>
     <GROUP id="{0CE63D98-F319-7656-21CD-D7A21B4A4B6C}" name="Source">
+      <FILE id="bZFgQD" name="Organ.cpp" compile="1" resource="0" file="Source/Organ.cpp"/>
+      <FILE id="wrXfSy" name="Organ.h" compile="0" resource="0" file="Source/Organ.h"/>
       <FILE id="p0fko7" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="IM4H1y" name="PluginProcessor.h" compile="0" resource="0"

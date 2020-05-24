@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "Organ.h"
 
 //==============================================================================
 class OrganAudioProcessor : public gin::Processor
@@ -24,10 +25,7 @@ public:
     AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
 
-    void updateParams (int blockSize);
-    void setupModMatrix();
-
-    gin::BandLimitedLookupTables bandLimitedLookupTables;
+    std::unique_ptr<Organ> organ;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrganAudioProcessor)

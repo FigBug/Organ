@@ -39,7 +39,7 @@ void callMIDIControlFunction (void* m, const char* cfname, unsigned char val);
 void notifyControlChangeByName (void* mcfg, const char* cfname, unsigned char val);
 void notifyControlChangeById (void* mcfg, int id, unsigned char val);
 
-extern int         getCCFunctionCount ();
+extern int         getCCFunctionCount (void);
 extern const char* getCCFunctionName (int x);
 
 extern void setKeyboardSplitMulti (void* mcfg,
@@ -58,7 +58,7 @@ extern void setKeyboardTranspose (void* mcfg, int t);
 extern void midiPrimeControllerMapping (void* mcfg);
 
 extern int midiConfig (void* mcfg, ConfigContext* cfg);
-extern const ConfigDoc* midiDoc ();
+extern const ConfigDoc* midiDoc (void);
 
 extern void setMIDINoteShift (void* mcfg, char offset);
 
@@ -76,7 +76,7 @@ extern int aseq_open (char* port_name);
 extern void aseq_close (void);
 #endif
 
-extern void parse_raw_midi_data (void* inst, uint8_t* buffer, size_t size);
+extern void parse_raw_midi_data (void* inst, const uint8_t* buffer, size_t size);
 extern void midi_panic (void* inst);
 
 typedef struct _midicc {

@@ -67,13 +67,13 @@ extern void vibratoProc (struct b_vibrato* v, float const* inbuffer, float* outb
 
 /* for standalone use */
 extern void reset_vibrato (struct b_vibrato* v);
-extern void init_vibrato (struct b_vibrato* v);
+extern void init_vibrato (struct b_vibrato* v, double SampleRateD);
 
 /* tonegen integration */
 extern void resetVibrato (void* tonegen);
-extern void initVibrato (void* tonegen, void* m);
+extern void initVibrato (void* tonegen, void* m, double SampleRateD);
 
-extern int scannerConfig (void* t, ConfigContext* cfg);
-extern const ConfigDoc* scannerDoc ();
+extern int scannerConfig (void* t, ConfigContext* cfg, double SampleRateD);
+extern const ConfigDoc* scannerDoc (void);
 
 #endif /* SCANNER_H */

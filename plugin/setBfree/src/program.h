@@ -112,7 +112,7 @@ struct b_programme {
 };
 
 extern int pgmConfig (struct b_programme* p, ConfigContext* cfg);
-extern const ConfigDoc* pgmDoc ();
+extern const ConfigDoc* pgmDoc (void);
 
 extern void installProgram (void* inst, unsigned char uc);
 
@@ -124,7 +124,7 @@ extern int saveProgramm (void* inst, int pgm, char* name, int flagmask);
 extern void exportProgramms (struct b_programme* p, FILE* fp);
 extern void writeProgramm (int pgmNr, Programme* p, const char* sep, FILE* fp);
 
-extern struct b_programme* allocProgs ();
+extern struct b_programme* allocProgs (void);
 extern void freeProgs (struct b_programme* p);
 
 extern int bindToProgram (void*       pp,

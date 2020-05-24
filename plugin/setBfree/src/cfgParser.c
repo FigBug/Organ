@@ -54,12 +54,24 @@
 
 #define LINEBUFSZ 2048
 
+const ConfigDoc*
+mainDoc ()
+{
+    return NULL;
+}
+
+int
+mainConfig (ConfigContext* cfg)
+{
+    return 0;
+}
+
 /*
  * Each configurable module implements this function. The implementation
  * is idempotent. The most recent call defines the parameter's value.
  */
 static int
-distributeParameter (b_instance* inst, ConfigContext* cfg)
+distributeParameter (b_instance* inst, ConfigContext* cfg, double SampleRateD)
 {
 	int n = 0;
 
@@ -74,7 +86,7 @@ distributeParameter (b_instance* inst, ConfigContext* cfg)
 	n += midiConfig (inst->midicfg, cfg);
 	n += pgmConfig (inst->progs, cfg);
 	n += oscConfig (inst->synth, cfg);
-	n += scannerConfig (inst->synth, cfg);
+	n += scannerConfig (inst->synth, cfg, SampleRateD);
 	n += ampConfig (inst->preamp, cfg);
 	n += whirlConfig (inst->whirl, cfg);
 	n += reverbConfig (inst->reverb, cfg);
@@ -97,7 +109,7 @@ distributeParameter (b_instance* inst, ConfigContext* cfg)
 }
 
 void
-parseConfigurationLine (void* inst, const char* fname, int lineNumber, char* oneLine)
+parseConfigurationLine (void* inst, const char* fname, int lineNumber, char* oneLine, double SampleRateD)
 {
 	char  delim[] = "=\n";
 	char* s       = oneLine;
@@ -121,7 +133,7 @@ parseConfigurationLine (void* inst, const char* fname, int lineNumber, char* one
 	if ((name = strtok (s, delim)) != NULL) {
 		int i;
 
-		for (i = strlen (name) - 1; isspace (name[i]); name[i] = '\0', i--)
+		for (i = (int) strlen (name) - 1; isspace (name[i]); name[i] = '\0', i--)
 			;
 
 		if ((value = strtok (NULL, delim)) != NULL) {
@@ -135,7 +147,7 @@ parseConfigurationLine (void* inst, const char* fname, int lineNumber, char* one
 				}
 			}
 
-			i = strlen (value);
+			i = (int) strlen (value);
 			if (0 < i) {
 				for (i = i - 1; isspace (value[i]); value[i] = '\0', i--)
 					;
@@ -143,7 +155,7 @@ parseConfigurationLine (void* inst, const char* fname, int lineNumber, char* one
 		}
 
 		if (strcasecmp (name, "config.read") == 0) {
-			parseConfigurationFile (inst, value);
+			parseConfigurationFile (inst, value, SampleRateD);
 		} else if (strcasecmp (name, "program.read") == 0) {
 			loadProgrammeFile (((b_instance*)inst)->progs, value);
 		} else {
@@ -152,20 +164,20 @@ parseConfigurationLine (void* inst, const char* fname, int lineNumber, char* one
 			cfg.linenr = lineNumber;
 			cfg.name   = name;
 			cfg.value  = value ? value : "";
-			distributeParameter ((b_instance*)inst, &cfg);
+			distributeParameter ((b_instance*)inst, &cfg, SampleRateD);
 		}
 	}
 }
 
 int
-evaluateConfigKeyValue (void* inst, const char* key, const char* value)
+evaluateConfigKeyValue (void* inst, const char* key, const char* value, double SampleRateD)
 {
 	ConfigContext cfg;
 	cfg.fname  = "---internal config---";
 	cfg.linenr = 0;
 	cfg.name   = key;
 	cfg.value  = value;
-	return distributeParameter ((b_instance*)inst, &cfg);
+	return distributeParameter ((b_instance*)inst, &cfg, SampleRateD);
 }
 
 #ifndef CFG_MAIN
@@ -279,7 +291,7 @@ dumpConfigDoc ()
 #endif
 
 int
-parseConfigurationFile (void* inst, const char* fname)
+parseConfigurationFile (void* inst, const char* fname, double SampleRateD)
 {
 	int   lineNumber = 0;
 	char  lineBuf[LINEBUFSZ];
@@ -293,7 +305,7 @@ parseConfigurationFile (void* inst, const char* fname)
 
 		while (fgets (lineBuf, LINEBUFSZ, fp) != NULL) {
 			lineNumber += 1; /* Increment the linenumber. */
-			parseConfigurationLine (inst, fname, lineNumber, lineBuf);
+			parseConfigurationLine (inst, fname, lineNumber, lineBuf, SampleRateD);
 		}
 
 		LOCALEGUARD_END;

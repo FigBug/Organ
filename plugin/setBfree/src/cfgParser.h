@@ -66,11 +66,12 @@ void parseConfigurationLine (
     void*       instance,
     const char* fname,
     int         lineNumber,
-    char*       oneLine);
+    char*       oneLine,
+    double SampleRateD);
 
-int parseConfigurationFile (void* instance, const char* fname);
-void dumpConfigDoc ();
-int evaluateConfigKeyValue (void* inst, const char* key, const char* value);
+int parseConfigurationFile (void* instance, const char* fname, double SampleRateD);
+void dumpConfigDoc (void);
+int evaluateConfigKeyValue (void* inst, const char* key, const char* value, double SampleRateD);
 void showConfigfileContext (ConfigContext* cfg, const char* msg);
 void configIntUnparsable (ConfigContext* cfg);
 void configIntOutOfRange (ConfigContext* cfg, int min, int max);

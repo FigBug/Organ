@@ -37,9 +37,8 @@
 #define B_size 9
 
 extern int mainConfig (ConfigContext* cfg);
-extern const ConfigDoc* mainDoc ();
+extern const ConfigDoc* mainDoc (void);
 
-extern double SampleRateD;                                    // TODO -> tonegen.c, vibrato.c non-global
 extern void save_midname (void* instp, FILE* f, char* model); // defined in midnam.c
 
 #endif /* MAIN_H */

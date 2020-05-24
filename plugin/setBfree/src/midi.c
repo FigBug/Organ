@@ -339,7 +339,7 @@ getCCFunctionId (const char* name)
 static void
 parseCCFlags (midiccflags_t* f, const char* param)
 {
-	int l = strlen (param);
+	int l = (int) strlen (param);
 	if (param[l - 1] == '-')
 		*f |= MFLAG_INV;
 }
@@ -1310,7 +1310,7 @@ process_midi_event (void* instp, const struct bmidi_event_t* ev)
  *  internal MIDI message format  and process the event
  */
 void
-parse_raw_midi_data (void* inst, uint8_t* buffer, size_t size)
+parse_raw_midi_data (void* inst, const uint8_t* buffer, size_t size)
 {
 	struct bmidi_event_t bev;
 	memset (&bev, 0, sizeof (struct bmidi_event_t));

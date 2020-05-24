@@ -46,12 +46,12 @@ struct b_reverb {
 };
 
 #include "../src/cfgParser.h"
-extern struct b_reverb* allocReverb ();
+extern struct b_reverb* allocReverb (void);
 void freeReverb (struct b_reverb* r);
 
 extern int reverbConfig (struct b_reverb* r, ConfigContext* cfg);
 
-extern const ConfigDoc* reverbDoc ();
+extern const ConfigDoc* reverbDoc (void);
 
 extern void setReverbInputGain (struct b_reverb* r, float g);
 

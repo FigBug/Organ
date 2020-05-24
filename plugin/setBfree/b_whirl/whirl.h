@@ -215,10 +215,10 @@ struct b_whirl {
 	void* midi_cfg_ptr;
 };
 
-extern struct b_whirl* allocWhirl ();
+extern struct b_whirl* allocWhirl (void);
 extern void freeWhirl (struct b_whirl* w);
 extern int whirlConfig (struct b_whirl* w, ConfigContext* cfg);
-extern const ConfigDoc* whirlDoc ();
+extern const ConfigDoc* whirlDoc (void);
 
 extern void initWhirl (struct b_whirl* w, void* m, double rate);
 

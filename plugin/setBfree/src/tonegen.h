@@ -552,16 +552,16 @@ extern void setPercussionFast (struct b_tonegen* t, int isFast);
 extern void setPercussionFirst (struct b_tonegen* t, int isFirst);
 extern void setNormalPercussionPercent (struct b_tonegen* t, int percent);
 extern void setSoftPercussionPercent (struct b_tonegen* t, int percent);
-extern void setFastPercussionDecay (struct b_tonegen* t, double seconds);
-extern void setSlowPercussionDecay (struct b_tonegen* t, double seconds);
+extern void setFastPercussionDecay (struct b_tonegen* t, double seconds, double SampleRateD);
+extern void setSlowPercussionDecay (struct b_tonegen* t, double seconds, double SampleRateD);
 extern void setEnvAttackModel (struct b_tonegen* t, int model);
 extern void setEnvReleaseModel (struct b_tonegen* t, int model);
 extern void setEnvAttackClickLevel (struct b_tonegen* t, double u);
 extern void setEnvReleaseClickLevel (struct b_tonegen* t, double u);
 extern void setKeyClick (struct b_tonegen* t, int v);
 extern int oscConfig (struct b_tonegen* t, ConfigContext* cfg);
-extern const ConfigDoc* oscDoc ();
-extern void initToneGenerator (struct b_tonegen* t, void* m);
+extern const ConfigDoc* oscDoc (void);
+extern void initToneGenerator (struct b_tonegen* t, void* m, double SampleRateD);
 extern void freeToneGenerator (struct b_tonegen* t);
 
 extern void oscKeyOff (struct b_tonegen* t, unsigned char midiNote, unsigned char realKey);
@@ -569,6 +569,6 @@ extern void oscKeyOn (struct b_tonegen* t, unsigned char midiNote, unsigned char
 extern void setDrawBars (void* inst, unsigned int manual, unsigned int setting[]);
 extern void oscGenerateFragment (struct b_tonegen* t, float* buf, size_t lengthSamples);
 
-struct b_tonegen* allocTonegen ();
+struct b_tonegen* allocTonegen (void);
 
 #endif /* TONEGEN_H */

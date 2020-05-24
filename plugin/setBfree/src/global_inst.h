@@ -20,12 +20,12 @@
 #define GLOBAL_INST_H
 
 #include "midi.h"
-#include "overdrive.h"
+#include "../b_overdrive/overdrive.h"
 #include "program.h"
-#include "reverb.h"
+#include "../b_reverb/reverb.h"
 #include "tonegen.h"
 #include "vibrato.h"
-#include "whirl.h"
+#include "../b_whirl/whirl.h"
 
 typedef struct b_instance {
 	struct b_reverb*    reverb;

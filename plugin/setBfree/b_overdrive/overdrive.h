@@ -24,12 +24,12 @@
 #include "../src/cfgParser.h"
 #include "../src/midi.h" // useMIDIControlFunction
 extern int ampConfig (void* pa, ConfigContext* cfg);
-extern const ConfigDoc* ampDoc ();
+extern const ConfigDoc* ampDoc (void);
 
 extern void initPreamp (void* pa, void* m);
 extern void setClean (void* pa, int useClean);
 
-extern void* allocPreamp ();
+extern void* allocPreamp (void);
 extern void freePreamp (void* pa);
 
 extern float* preamp (void* pa, float* inBuf, float* outBuf, size_t bufLengthSamples);

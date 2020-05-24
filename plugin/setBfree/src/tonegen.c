@@ -1197,7 +1197,8 @@ static size_t
 fitWave (double Hz,
          double precision,
          int    minSamples,
-         int    maxSamples)
+         int    maxSamples,
+         double SampleRateD)
 {
 	double minErr = 99999.9;
 	double minSpn = 0.0;
@@ -1268,7 +1269,8 @@ writeSamples (float* buf,
               double ap[],
               size_t apLen,
               double attenuation,
-              double f1Hz)
+              double f1Hz,
+              double SampleRateD)
 {
 	const double fullCircle = 2.0 * M_PI;
 	double       apl[MAX_PARTIALS];
@@ -1334,7 +1336,7 @@ writeSamples (float* buf,
  * @param precision  The loop precision value. See function fitWave().
  */
 static void
-initOscillators (struct b_tonegen* t, int variant, double precision)
+initOscillators (struct b_tonegen* t, int variant, double precision, double SampleRateD)
 {
 	int                 i;
 	double              baseTuning;
@@ -1451,7 +1453,8 @@ initOscillators (struct b_tonegen* t, int variant, double precision)
 		wszs = fitWave (osp->frequency,
 		                precision,
 		                3 * BUFFER_SIZE_SAMPLES, /* Was x1 */
-		                ceil (SampleRateD / 48000.0) * 4096);
+		                ceil (SampleRateD / 48000.0) * 4096,
+                        SampleRateD);
 
 		/* Compute the number of bytes needed for exactly one wave buffer. */
 
@@ -1509,7 +1512,8 @@ initOscillators (struct b_tonegen* t, int variant, double precision)
 		              harmonicsList,
 		              (size_t)MAX_PARTIALS,
 		              osp->attenuation,
-		              osp->frequency);
+		              osp->frequency,
+                      SampleRateD);
 
 	} /* for each oscillator struct */
 }
@@ -1667,7 +1671,7 @@ getPercDecayConst_spl (double ig, double tg, double spls)
  * @param seconds Time expressed as seconds
  */
 double
-getPercDecayConst_sec (double ig, double tg, double seconds)
+getPercDecayConst_sec (double ig, double tg, double seconds, double SampleRateD)
 {
 	return getPercDecayConst_spl (ig, tg, SampleRateD * seconds);
 }
@@ -1678,26 +1682,30 @@ getPercDecayConst_sec (double ig, double tg, double seconds)
  * amplification and the percussion amplification decrement counter.
  */
 static void
-computePercResets (struct b_tonegen* t)
+computePercResets (struct b_tonegen* t, double SampleRateD)
 {
 	/* Compute the percussion reset values. */
 
 	/* Alternate 25-May-2003 */
 	t->percEnvGainDecayFastNorm = getPercDecayConst_sec (t->percEnvGainResetNorm,
 	                                                     dBToGain (-60.0),
-	                                                     t->percFastDecaySeconds);
+	                                                     t->percFastDecaySeconds,
+                                                         SampleRateD);
 
 	t->percEnvGainDecayFastSoft = getPercDecayConst_sec (t->percEnvGainResetSoft,
 	                                                     dBToGain (-60.0),
-	                                                     t->percFastDecaySeconds);
+	                                                     t->percFastDecaySeconds,
+                                                         SampleRateD);
 
 	t->percEnvGainDecaySlowNorm = getPercDecayConst_sec (t->percEnvGainResetNorm,
 	                                                     dBToGain (-60.0),
-	                                                     t->percSlowDecaySeconds);
+	                                                     t->percSlowDecaySeconds,
+                                                         SampleRateD);
 
 	t->percEnvGainDecaySlowSoft = getPercDecayConst_sec (t->percEnvGainResetSoft,
 	                                                     dBToGain (-60.0),
-	                                                     t->percSlowDecaySeconds);
+	                                                     t->percSlowDecaySeconds,
+                                                         SampleRateD);
 
 	/* Deploy the computed reset values. */
 
@@ -1709,13 +1717,13 @@ computePercResets (struct b_tonegen* t)
  * @param seconds  The percussion decay time.
  */
 void
-setFastPercussionDecay (struct b_tonegen* t, double seconds)
+setFastPercussionDecay (struct b_tonegen* t, double seconds, double SampleRateD)
 {
 	t->percFastDecaySeconds = seconds;
 	if (t->percFastDecaySeconds <= 0.0) {
 		t->percFastDecaySeconds = 0.1;
 	}
-	computePercResets (t);
+	computePercResets (t, SampleRateD);
 }
 
 /**
@@ -1723,13 +1731,13 @@ setFastPercussionDecay (struct b_tonegen* t, double seconds)
  * @param seconds  The percussion decay time.
  */
 void
-setSlowPercussionDecay (struct b_tonegen* t, double seconds)
+setSlowPercussionDecay (struct b_tonegen* t, double seconds, double SampleRateD)
 {
 	t->percSlowDecaySeconds = seconds;
 	if (t->percSlowDecaySeconds <= 0.0) {
 		t->percSlowDecaySeconds = 0.1;
 	}
-	computePercResets (t);
+	computePercResets (t, SampleRateD);
 }
 
 /**
@@ -2771,7 +2779,7 @@ setSwellPedal2FromMIDI (void* d, unsigned char u)
  * be set.
  */
 void
-initToneGenerator (struct b_tonegen* t, void* m)
+initToneGenerator (struct b_tonegen* t, void* m, double SampleRateD)
 {
 	int i;
 
@@ -2827,7 +2835,7 @@ initToneGenerator (struct b_tonegen* t, void* m)
 #endif
 
 	/* Allocate taper buffers, initialize oscillator structs, build keyOsc. */
-	initOscillators (t, t->tgVariant, t->tgPrecision);
+	initOscillators (t, t->tgVariant, t->tgPrecision, SampleRateD);
 
 #ifdef KEYCOMPRESSION
 
@@ -3194,7 +3202,7 @@ oscGenerateFragment (struct b_tonegen* t, float* buf, size_t lengthSamples)
 			if (osp->lengthSamples < (osp->pos + BUFFER_SIZE_SAMPLES)) {
 				/* Need another instruction because of wrap */
 				CoreIns* prev      = t->coreWriter;
-				t->coreWriter->cnt = osp->lengthSamples - osp->pos;
+				t->coreWriter->cnt = (int) (osp->lengthSamples - osp->pos);
 				osp->pos           = BUFFER_SIZE_SAMPLES - t->coreWriter->cnt;
 				t->coreWriter += 1;
 				t->coreWriter->opr = prev->opr;
@@ -3210,7 +3218,7 @@ oscGenerateFragment (struct b_tonegen* t, float* buf, size_t lengthSamples)
 				t->coreWriter->npgain = prev->npgain;
 				t->coreWriter->nvgain = prev->nvgain;
 
-				t->coreWriter->cnt = osp->pos;
+				t->coreWriter->cnt = (int) osp->pos;
 			} else {
 				t->coreWriter->cnt = BUFFER_SIZE_SAMPLES;
 				osp->pos += BUFFER_SIZE_SAMPLES;
@@ -3311,7 +3319,7 @@ oscGenerateFragment (struct b_tonegen* t, float* buf, size_t lengthSamples)
 			if (osp->lengthSamples < (osp->pos + BUFFER_SIZE_SAMPLES)) {
 				/* Instruction wraps source buffer */
 				CoreIns* prev      = t->coreWriter;                            /* Refer to the first instruction */
-				t->coreWriter->cnt = osp->lengthSamples - osp->pos;            /* Set len count */
+				t->coreWriter->cnt = (int) (osp->lengthSamples - osp->pos);    /* Set len count */
 				osp->pos           = BUFFER_SIZE_SAMPLES - t->coreWriter->cnt; /* Updat src pos */
 
 				t->coreWriter += 1; /* Advance to next instruction */
@@ -3331,7 +3339,7 @@ oscGenerateFragment (struct b_tonegen* t, float* buf, size_t lengthSamples)
 				t->coreWriter->npgain = prev->npgain;
 				t->coreWriter->nvgain = prev->nvgain;
 
-				t->coreWriter->cnt = osp->pos; /* Up to next read position */
+				t->coreWriter->cnt = (int) osp->pos; /* Up to next read position */
 			} else {
 				t->coreWriter->cnt = BUFFER_SIZE_SAMPLES;
 				osp->pos += BUFFER_SIZE_SAMPLES;

@@ -76,7 +76,7 @@
  * 7 or 8 Hz.
  */
 static void
-setScannerFrequency (struct b_vibrato* v, double Hertz)
+setScannerFrequency (struct b_vibrato* v, double Hertz, double SampleRateD)
 {
 	v->vibFqHertz = Hertz;
 	v->statorIncrement =
@@ -284,18 +284,18 @@ resetVibrato (void* t)
 }
 
 void
-init_vibrato (struct b_vibrato* v)
+init_vibrato (struct b_vibrato* v, double SampleRateD)
 {
-	setScannerFrequency (v, v->vibFqHertz);
+	setScannerFrequency (v, v->vibFqHertz, SampleRateD);
 	initIncrementTables (v);
 	setVibrato (v, 0);
 }
 
 void
-initVibrato (void* t, void* m)
+initVibrato (void* t, void* m, double SampleRateD)
 {
 	struct b_vibrato* v = &(((struct b_tonegen*)t)->inst_vibrato);
-	init_vibrato (v);
+	init_vibrato (v, SampleRateD);
 	useMIDIControlFunction (m, "vibrato.knob", setVibratoFromMIDI, t);
 	useMIDIControlFunction (m, "vibrato.routing", setVibratoRoutingFromMIDI, t);
 	useMIDIControlFunction (m, "vibrato.upper", setVibratoUpperFromMIDI, t);
@@ -306,7 +306,7 @@ initVibrato (void* t, void* m)
  * Configuration interface.
  */
 int
-scannerConfig (void* t, ConfigContext* cfg)
+scannerConfig (void* t, ConfigContext* cfg, double SampleRateD)
 {
 	struct b_vibrato* v   = &(((struct b_tonegen*)t)->inst_vibrato);
 	int               ack = 0;
@@ -315,7 +315,7 @@ scannerConfig (void* t, ConfigContext* cfg)
 	                                  cfg,
 	                                  &d,
 	                                  4.0, 22.0)) == 1) {
-		setScannerFrequency (v, d);
+		setScannerFrequency (v, d, SampleRateD);
 	} else if ((ack = getConfigParameter_dr ("scanner.modulation.v1",
 	                                         cfg,
 	                                         &v->vib1OffAmp,

@@ -30,6 +30,8 @@ void OrganAudioProcessor::reset()
 void OrganAudioProcessor::prepareToPlay (double newSampleRate, int newSamplesPerBlock)
 {
     Processor::prepareToPlay (newSampleRate, newSamplesPerBlock);
+    
+    organ = std::make_unique<Organ> (newSampleRate, newSamplesPerBlock);
 }
 
 void OrganAudioProcessor::releaseResources()
@@ -39,6 +41,9 @@ void OrganAudioProcessor::releaseResources()
 void OrganAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
 {
     ScopedNoDenormals noDenormals;
+    
+    if (organ != nullptr)
+        organ->processBlock (buffer, midi);
 }
 
 //==============================================================================

@@ -102,8 +102,6 @@ allocReverb ()
 
 	if (!r) {
 		return NULL;
-		fprintf (stderr, "FATAL: memory allocation failed for reverb.\n");
-		exit (1);
 	}
 
 	r->inputGain = 0.1;    /* Input gain value */

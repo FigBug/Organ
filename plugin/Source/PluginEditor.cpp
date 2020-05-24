@@ -7,6 +7,7 @@ using namespace gin;
 OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
     : ProcessorEditor (p, 50, 50 + 15), proc (p)
 {
+    setGridSize (10, 3);
 }
 
 OrganAudioProcessorEditor::~OrganAudioProcessorEditor()
