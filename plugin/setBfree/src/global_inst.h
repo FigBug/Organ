@@ -39,7 +39,7 @@ typedef struct b_instance {
 
 /* clang-format off */
 #define LOCALEGUARD_START                                        \
-        char* oldlocale = _strdup (setlocale (LC_NUMERIC, NULL)); \
+        char* oldlocale = strdup (setlocale (LC_NUMERIC, NULL)); \
         if (strcmp (oldlocale, "C")) {                           \
                 setlocale (LC_NUMERIC, "C");                     \
         } else {                                                 \

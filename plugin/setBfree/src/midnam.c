@@ -55,7 +55,7 @@ midnam_print_pgm_cb (int num, int pc, const char* name, void* arg)
 	}
 
 	if (ent == 0) {
-		escaped = _strdup (name);
+		escaped = strdup (name);
 	} else {
 		const char *t1, *t2;
 		escaped    = (char*)malloc ((strlen (name) + ent * 4 + 1) * sizeof (char));

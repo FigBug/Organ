@@ -95,10 +95,10 @@ kvstore_store (void* kvs, const char* key, const char* value)
 		it       = (struct b_kv*)calloc (1, sizeof (struct b_kv));
 		kv->next = it;
 		it       = kv;
-		it->key  = _strdup (key);
+		it->key  = strdup (key);
 	}
 	free (it->value);
-	it->value = _strdup (value);
+	it->value = strdup (value);
 }
 
 /* setBfree resource/running config */
