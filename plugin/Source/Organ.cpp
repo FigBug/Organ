@@ -58,24 +58,35 @@ void Organ::initAll()
     setDrawBars (&inst, 0, defaultPreset);
 }
 
-void Organ::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
+void Organ::processMidi (MidiBuffer& midi, int pos, int len)
 {
     MidiMessage msg;
-    int pos = 0;
+    int eventPos = 0;
     MidiBuffer::Iterator itr (midi);
     
-    while (itr.getNextEvent (msg, pos))
+    while (itr.getNextEvent (msg, eventPos))
     {
+        if (eventPos >= pos + len)
+            break;
+        
         auto data = msg.getRawData();
         auto size = msg.getRawDataSize();
         
-        parse_raw_midi_data (&inst, data, size);
+        parse_raw_midi_data (&inst, data, size_t (size));
     }
+}
+
+void Organ::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
+{
+    const int stepSize = BUFFER_SIZE_SAMPLES;
+    int pos = 0;
     
     while (fifo.getNumReady() < buffer.getNumSamples())
     {
-        gin::ScratchBuffer temp {5, BUFFER_SIZE_SAMPLES};
-        gin::ScratchBuffer out {2, BUFFER_SIZE_SAMPLES};
+        processMidi (midi, pos, stepSize);
+        
+        gin::ScratchBuffer temp {5, stepSize};
+        gin::ScratchBuffer out {2, stepSize};
         auto a = temp.getWritePointer (0);
         auto b = temp.getWritePointer (1);
         auto c = temp.getWritePointer (2);
@@ -85,14 +96,18 @@ void Organ::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
         auto l = out.getWritePointer (0);
         auto r = out.getWritePointer (1);
 
-        oscGenerateFragment (inst.synth, a, BUFFER_SIZE_SAMPLES);
-        preamp (inst.preamp, a, b, BUFFER_SIZE_SAMPLES);
-        reverb (inst.reverb, b, c, BUFFER_SIZE_SAMPLES);
+        oscGenerateFragment (inst.synth, a, stepSize);
+        preamp (inst.preamp, a, b, stepSize);
+        reverb (inst.reverb, b, c, stepSize);
         
-        whirlProc3 (inst.whirl, c, l, r, t, u, BUFFER_SIZE_SAMPLES);
+        whirlProc3 (inst.whirl, c, l, r, t, u, stepSize);
         
         fifo.write (out);
+        pos += stepSize;
     }
+    
+    if (pos < buffer.getNumSamples())
+        processMidi (midi, pos, buffer.getNumSamples() - pos);
     
     fifo.read (buffer);
 }

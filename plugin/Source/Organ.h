@@ -16,6 +16,8 @@ public:
     void processBlock (AudioBuffer<float>&, MidiBuffer&);
     
 private:
+    void processMidi (MidiBuffer& midi, int pos, int len);
+    
     void allocAll();
     void initAll();
     void freeAll();
