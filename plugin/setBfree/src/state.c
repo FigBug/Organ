@@ -43,6 +43,7 @@
  #pragma warning(disable:4244)
  #pragma warning(disable:4100)
  #pragma warning(disable:4706)
+ #define strdup _strdup
 #endif
 
 void rc_dump_state (void* t);
