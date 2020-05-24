@@ -23,13 +23,9 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <limits.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
-#include <sys/time.h>
-#include <unistd.h>
 
 #include "global_inst.h"
 #include "main.h"
@@ -37,6 +33,18 @@
 #include "midi_types.h"
 #include "program.h"
 #include "state.h"
+
+#ifdef _MSC_VER 
+ #define strncasecmp _strnicmp
+ #define strcasecmp _stricmp
+#endif
+
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
 
 /*
  * Symbolic names for functions that can be governed by MIDI controllers.

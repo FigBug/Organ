@@ -34,8 +34,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
-#include <unistd.h>
 
 #ifndef CFG_MAIN
 
@@ -52,6 +50,11 @@
 #include "cfgParser.h"
 #include "state.h"
 
+#ifdef _MSC_VER 
+ #define strncasecmp _strnicmp
+ #define strcasecmp _stricmp
+#endif
+
 #define LINEBUFSZ 2048
 
 const ConfigDoc*
@@ -63,6 +66,7 @@ mainDoc ()
 int
 mainConfig (ConfigContext* cfg)
 {
+	(void)cfg;
     return 0;
 }
 
@@ -633,7 +637,7 @@ getConfigParameter_fr (const char*    par,
 
 	rtn = getConfigParameter_dr (par, cfg, &d, (double)lowInc, (double)highInc);
 	if (rtn == 1) {
-		*fp = d;
+		*fp = (float) d;
 	}
 	return rtn;
 }

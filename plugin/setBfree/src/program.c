@@ -29,17 +29,25 @@
 #include <fcntl.h>
 #include <locale.h>
 #include <math.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
-#include <sys/time.h>
-#include <unistd.h>
 
 #include "global_inst.h"
 #include "main.h"
 #include "program.h"
+
+#ifdef _MSC_VER 
+ #define strncasecmp _strnicmp
+ #define strcasecmp _stricmp
+#endif
+
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
 
 /* clang-format off */
 
@@ -595,7 +603,7 @@ bindToProgram (void*       pp,
 
 #define SET_TRANSPOSE(F, I)                                           \
 	PGM->flags[0] |= (FL_INUSE | (F));                            \
-	if ((rtn = parseTranspose (val, &iv, msg))) {                 \
+	if ((rtn = parseTranspose (val, &iv, msg)) != 0) {                 \
 		return stateMessage (fileName, lineNumber, msg, rtn); \
 	} else {                                                      \
 		PGM->transpose[(I)] = iv;                             \

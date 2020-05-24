@@ -35,6 +35,12 @@
 #include "eqcomp.h"
 #include "whirl.h"
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+#endif
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846 /* pi */
 #endif

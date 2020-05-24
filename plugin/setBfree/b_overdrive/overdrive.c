@@ -7,6 +7,12 @@
 #include <math.h>
 #include "overdrive.h"
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
 
 /* Decimation filter definition */
 static const float aaldef[33] = {

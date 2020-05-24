@@ -38,6 +38,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
+
 void rc_dump_state (void* t);
 /* simple key-value store */
 
@@ -88,10 +95,10 @@ kvstore_store (void* kvs, const char* key, const char* value)
 		it       = (struct b_kv*)calloc (1, sizeof (struct b_kv));
 		kv->next = it;
 		it       = kv;
-		it->key  = strdup (key);
+		it->key  = _strdup (key);
 	}
 	free (it->value);
-	it->value = strdup (value);
+	it->value = _strdup (value);
 }
 
 /* setBfree resource/running config */

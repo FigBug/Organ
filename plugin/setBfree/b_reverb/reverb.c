@@ -95,6 +95,11 @@
 #include "../src/midi.h" // useMIDIControlFunction
 #include "reverb.h"
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+#endif
+
 struct b_reverb*
 allocReverb ()
 {
@@ -199,7 +204,7 @@ void
 setReverbMixFromMIDI (void* rev, unsigned char v)
 {
 	struct b_reverb* r = (struct b_reverb*)rev;
-	setReverbMix (r, (float)v / 127.0);
+	setReverbMix (r, (float)v / 127.0f);
 }
 
 int

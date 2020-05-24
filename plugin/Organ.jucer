@@ -30,12 +30,8 @@
         <FILE id="zAblqW" name="global_inst.h" compile="0" resource="0" file="setBfree/src/global_inst.h"/>
         <FILE id="mBjwR9" name="main.c" compile="0" resource="0" file="setBfree/src/main.c"/>
         <FILE id="FZzPn5" name="main.h" compile="0" resource="0" file="setBfree/src/main.h"/>
-        <FILE id="hkqc7s" name="memstream.c" compile="1" resource="0" file="setBfree/src/memstream.c"/>
-        <FILE id="sMIUKR" name="memstream.h" compile="0" resource="0" file="setBfree/src/memstream.h"/>
         <FILE id="Lstnys" name="midi.c" compile="1" resource="0" file="setBfree/src/midi.c"/>
         <FILE id="NkB5Pf" name="midi.h" compile="0" resource="0" file="setBfree/src/midi.h"/>
-        <FILE id="Y5xmBF" name="midi_aseq.c" compile="1" resource="0" file="setBfree/src/midi_aseq.c"/>
-        <FILE id="CRRxf7" name="midi_aseq.h" compile="0" resource="0" file="setBfree/src/midi_aseq.h"/>
         <FILE id="OdB564" name="midi_types.h" compile="0" resource="0" file="setBfree/src/midi_types.h"/>
         <FILE id="mJGmLf" name="midnam.c" compile="1" resource="0" file="setBfree/src/midnam.c"/>
         <FILE id="DRHbgf" name="pgmParser.c" compile="1" resource="0" file="setBfree/src/pgmParser.c"/>

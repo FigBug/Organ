@@ -33,6 +33,13 @@
 #include "tonegen.h"
 #include "vibrato.h"
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+#endif
+
+
 /*
  * The increment is encoded using a 16-bit fixed-point mantissa.
  * This means that an increment of 1.0 is represented by 2^16, or (1<<16).

@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
+
 static void
 midnam_header (FILE* f, char* model)
 {
@@ -48,7 +55,7 @@ midnam_print_pgm_cb (int num, int pc, const char* name, void* arg)
 	}
 
 	if (ent == 0) {
-		escaped = strdup (name);
+		escaped = _strdup (name);
 	} else {
 		const char *t1, *t2;
 		escaped    = (char*)malloc ((strlen (name) + ent * 4 + 1) * sizeof (char));

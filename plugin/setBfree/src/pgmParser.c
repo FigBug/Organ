@@ -31,6 +31,13 @@
 #include "pgmParser.h"
 #include "program.h"
 
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
+
 #define TKN_ERROR -3
 #define TKN_VOID -2
 #define TKN_EOF -1
@@ -79,7 +86,7 @@ typedef struct _parserstate {
 static int
 getToken (FILE* fp, int* linePtr, char* tokbuf, size_t tblen)
 {
-	int    c;
+	int    c	   = 0;
 	size_t tp      = 0;
 	int    tokType = TKN_VOID;
 	int    state   = 1;
@@ -115,7 +122,7 @@ getToken (FILE* fp, int* linePtr, char* tokbuf, size_t tblen)
 	/* Examine character */
 	if ((c == '{') || (c == '}') || (c == '=') || (c == ',')) {
 		tokType   = c; /* The character is its own token */
-		tokbuf[0] = c;
+		tokbuf[0] = (char)c;
 		tokbuf[1] = '\0';
 	} else {
 		tokType = TKN_STRING;
@@ -357,40 +364,3 @@ loadProgrammeFile (void* p, char* fileName)
 		return (int)P_ERROR;
 	}
 }
-
-#ifdef LV2SYNTH
-int
-loadProgrammeString (void* p, char* pdef)
-{
-	ParserState ps;
-	ps.p   = p;
-	int rv = (int)P_ERROR;
-#ifdef _WIN32
-	char temppath[MAX_PATH - 13];
-	char filename[MAX_PATH + 1];
-	if (0 == GetTempPath (sizeof (temppath), temppath))
-		return rv;
-	if (0 == GetTempFileName (temppath, "sbfpgm", 0, filename))
-		return rv;
-	FILE* f = fopen (filename, "wb");
-	if (NULL == f)
-		return rv;
-	fwrite (pdef, strlen (pdef), 1, f);
-	fclose (f);
-	if ((ps.fp = fopen (filename, "rb")) != NULL)
-#else
-	if ((ps.fp = fmemopen (pdef, strlen (pdef), "r")) != NULL)
-#endif
-	{
-		ps.fileName   = "<string-pipe>";
-		ps.lineNumber = 0;
-		getNextToken (&ps);
-		rv = (int)parseProgramDefinitionList (&ps);
-		fclose (ps.fp);
-	}
-#ifdef _WIN32
-	unlink (filename);
-#endif
-	return rv;
-}
-#endif

@@ -29,10 +29,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <strings.h>
 
 #include "global_inst.h"
 #include "main.h"
+
+#if _WIN32
+ #pragma warning(disable:4305)
+ #pragma warning(disable:4244)
+ #pragma warning(disable:4100)
+ #pragma warning(disable:4706)
+#endif
+
+#ifdef _MSC_VER 
+ #define strncasecmp _strnicmp
+ #define strcasecmp _stricmp
+#endif
 
 /* These are assertion support macros. */
 /* In range? : A <= V < B  */
@@ -1339,8 +1350,8 @@ static void
 initOscillators (struct b_tonegen* t, int variant, double precision, double SampleRateD)
 {
 	int                 i;
-	double              baseTuning;
-	int                 nofOscillators;
+	double              baseTuning = 0.0;
+	int                 nofOscillators = 0;
 	int                 tuningOsc = 10;
 	struct _oscillator* osp;
 	double              harmonicsList[MAX_PARTIALS];
@@ -2535,7 +2546,7 @@ setDrawBars (void* inst, unsigned int manual, unsigned int setting[])
 {
 	struct b_tonegen* t = ((b_instance*)inst)->synth;
 	int               i;
-	int               offset;
+	int               offset = 0;
 	if (manual == 0) {
 		offset = UPPER_BUS_LO;
 	} else if (manual == 1) {
