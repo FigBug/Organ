@@ -1,5 +1,9 @@
 name: Build Linux
-on: [push]
+on:
+  push:
+    branches:
+      - master
+      - release
 jobs:
   build:
     name: Build Linux
@@ -19,7 +23,3 @@ jobs:
         shell: bash
         env:
           APIKEY: ${{ secrets.APIKEY }}
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Organ_Linux
-          path: ci/bin/Organ_Linux.zip
