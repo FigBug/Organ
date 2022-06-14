@@ -13,10 +13,10 @@ public:
     Organ (double sr, int bs);
     ~Organ();
     
-    void processBlock (AudioBuffer<float>&, MidiBuffer&);
+    void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&);
     
 private:
-    void processMidi (MidiBuffer& midi, int pos, int len);
+    void processMidi (juce::MidiBuffer& midi, int pos, int len);
     
     void allocAll();
     void initAll();

@@ -43,6 +43,8 @@
 #ifdef _MSC_VER 
  #define strncasecmp _strnicmp
  #define strcasecmp _stricmp
+#elif defined __APPLE__
+ #include <strings.h>
 #endif
 
 /* These are assertion support macros. */

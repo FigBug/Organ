@@ -58,11 +58,11 @@ void Organ::initAll()
     setDrawBars (&inst, 0, defaultPreset);
 }
 
-void Organ::processMidi (MidiBuffer& midi, int pos, int len)
+void Organ::processMidi (juce::MidiBuffer& midi, int pos, int len)
 {
-    MidiMessage msg;
+    juce::MidiMessage msg;
     int eventPos = 0;
-    MidiBuffer::Iterator itr (midi);
+    juce::MidiBuffer::Iterator itr (midi);
     
     while (itr.getNextEvent (msg, eventPos))
     {
@@ -76,7 +76,7 @@ void Organ::processMidi (MidiBuffer& midi, int pos, int len)
     }
 }
 
-void Organ::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
+void Organ::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi)
 {
     const int stepSize = BUFFER_SIZE_SAMPLES;
     int pos = 0;

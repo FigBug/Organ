@@ -38,9 +38,9 @@ void OrganAudioProcessor::releaseResources()
 {
 }
 
-void OrganAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midi)
+void OrganAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi)
 {
-    ScopedNoDenormals noDenormals;
+    juce::ScopedNoDenormals noDenormals;
     
     if (organ != nullptr)
         organ->processBlock (buffer, midi);
@@ -52,14 +52,14 @@ bool OrganAudioProcessor::hasEditor() const
     return true;
 }
 
-AudioProcessorEditor* OrganAudioProcessor::createEditor()
+juce::AudioProcessorEditor* OrganAudioProcessor::createEditor()
 {
     return new OrganAudioProcessorEditor (*this);
 }
 
 //==============================================================================
 // This creates new instances of the plugin..
-AudioProcessor* JUCE_CALLTYPE createPluginFilter()
+juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new OrganAudioProcessor();
 }
