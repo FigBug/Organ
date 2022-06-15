@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "Drawbar.h"
 
 //==============================================================================
 OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
@@ -7,13 +8,13 @@ OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
 {
     for (auto pp : p.getPluginParameters())
     {
-        auto pc = new gin::Knob (pp);
+        auto pc = new Drawbar (pp);
 
         addAndMakeVisible (pc);
         controls.add (pc);
     }
 
-    setGridSize (9, 3);
+    setGridSize (15, 5);
 
     layout.setLayout ("ui.json", juce::File (__FILE__).getSiblingFile ("ui.json"));
 }
