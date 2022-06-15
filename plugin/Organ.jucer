@@ -49,6 +49,7 @@
       </GROUP>
     </GROUP>
     <GROUP id="{0CE63D98-F319-7656-21CD-D7A21B4A4B6C}" name="Source">
+      <FILE id="kxovPl" name="ui.json" compile="0" resource="1" file="Source/ui.json"/>
       <FILE id="bZFgQD" name="Organ.cpp" compile="1" resource="0" file="Source/Organ.cpp"/>
       <FILE id="wrXfSy" name="Organ.h" compile="0" resource="0" file="Source/Organ.h"/>
       <FILE id="p0fko7" name="PluginProcessor.cpp" compile="1" resource="0"

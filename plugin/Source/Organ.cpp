@@ -53,24 +53,34 @@ void Organ::initAll()
     initRunningConfig (inst.state, inst.midicfg);
     
     initMidiTables (inst.midicfg);
-    
-    unsigned int defaultPreset[9] = { 8, 8, 6, 0, 0, 0, 0, 0, 0 };
-    setDrawBars (&inst, 0, defaultPreset);
+}
+
+void Organ::setUpperDrawBar (int idx, int val)
+{
+    upper[idx] = (unsigned int)val;
+}
+
+void Organ::setLowerDrawBar (int idx, int val)
+{
+    upper[idx] = (unsigned int)val;
+}
+
+void Organ::setPedalDrawBar (int idx, int val)
+{
+    pedal[idx] = (unsigned int)val;
 }
 
 void Organ::processMidi (juce::MidiBuffer& midi, int pos, int len)
 {
-    juce::MidiMessage msg;
-    int eventPos = 0;
-    juce::MidiBuffer::Iterator itr (midi);
-    
-    while (itr.getNextEvent (msg, eventPos))
+    for (const juce::MidiMessageMetadata metadata : midi)
     {
-        if (eventPos >= pos + len)
+        if (metadata.samplePosition < pos)
+            continue;
+        if (metadata.samplePosition >= pos + len)
             break;
         
-        auto data = msg.getRawData();
-        auto size = msg.getRawDataSize();
+        auto data = metadata.data;
+        auto size = metadata.numBytes;
         
         parse_raw_midi_data (&inst, data, size_t (size));
     }
@@ -80,6 +90,10 @@ void Organ::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& mi
 {
     const int stepSize = BUFFER_SIZE_SAMPLES;
     int pos = 0;
+
+    setDrawBars (&inst, 0, upper);
+    setDrawBars (&inst, 1, lower);
+    setDrawBars (&inst, 2, pedal);
     
     while (fifo.getNumReady() < buffer.getNumSamples())
     {

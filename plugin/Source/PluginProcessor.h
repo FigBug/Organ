@@ -27,6 +27,10 @@ public:
 
     std::unique_ptr<Organ> organ;
 
+    gin::Parameter::Ptr upperDrawBars[9];
+    gin::Parameter::Ptr lowerDrawBars[9];
+    gin::Parameter::Ptr pedalDrawBars[9];
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrganAudioProcessor)
 };

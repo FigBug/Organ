@@ -14,6 +14,10 @@ public:
     ~Organ();
     
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&);
+
+    void setUpperDrawBar (int idx, int val);
+    void setLowerDrawBar (int idx, int val);
+    void setPedalDrawBar (int idx, int val);
     
 private:
     void processMidi (juce::MidiBuffer& midi, int pos, int len);
@@ -26,4 +30,8 @@ private:
     b_instance inst;
     
     gin::AudioFifo fifo { 2, 1024 };
+
+    unsigned int upper[9] = { 0 };
+    unsigned int lower[9] = { 0 };
+    unsigned int pedal[9] = { 0 };
 };
