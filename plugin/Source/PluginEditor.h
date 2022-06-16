@@ -19,5 +19,9 @@ private:
 
     OrganAudioProcessor& proc;
 
+    juce::MidiKeyboardComponent upperKeyboard { proc.upperState, juce::MidiKeyboardComponent::horizontalKeyboard };
+    juce::MidiKeyboardComponent lowerKeyboard { proc.lowerState, juce::MidiKeyboardComponent::horizontalKeyboard };
+    juce::MidiKeyboardComponent pedalKeyboard { proc.pedalState, juce::MidiKeyboardComponent::horizontalKeyboard };
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrganAudioProcessorEditor)
 };

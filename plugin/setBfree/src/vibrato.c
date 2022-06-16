@@ -94,7 +94,7 @@ setScannerFrequency (struct b_vibrato* v, double Hertz, double SampleRateD)
  * Controls the amount of vibrato to apply by selecting the proper lookup
  * table for the processing routine.
  */
-static void
+void
 setVibrato (struct b_vibrato* v, int select)
 {
 	switch (select & 3) {

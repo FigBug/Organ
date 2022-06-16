@@ -76,4 +76,6 @@ extern void initVibrato (void* tonegen, void* m, double SampleRateD);
 extern int scannerConfig (void* t, ConfigContext* cfg, double SampleRateD);
 extern const ConfigDoc* scannerDoc (void);
 
+extern void setVibrato (struct b_vibrato* v, int select);
+
 #endif /* SCANNER_H */

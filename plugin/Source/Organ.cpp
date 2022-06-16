@@ -4,6 +4,7 @@ extern "C"
 {
 #include "../setBfree/src/state.h"
 #include "../setBfree/src/tonegen.h"
+#include "../setBfree/src/vibrato.h"
 #include "../setBfree/src/midi.h"
 }
 
@@ -13,6 +14,10 @@ Organ::Organ (double sr, int bs)
     fifo.setSize (2, std::max (1024, bs * 2));
     allocAll();
     initAll();
+
+    setDrawBars (&inst, 0, upper);
+    setDrawBars (&inst, 1, lower);
+    setDrawBars (&inst, 2, pedal);
 }
 
 Organ::~Organ()
@@ -62,12 +67,90 @@ void Organ::setUpperDrawBar (int idx, int val)
 
 void Organ::setLowerDrawBar (int idx, int val)
 {
-    upper[idx] = (unsigned int)val;
+    lower[idx] = (unsigned int)val;
 }
 
 void Organ::setPedalDrawBar (int idx, int val)
 {
     pedal[idx] = (unsigned int)val;
+}
+
+void Organ::setVibratoUpper (bool v)
+{
+    ::setVibratoUpper (inst.synth, v);
+}
+
+void Organ::setVibratoLower (bool v)
+{
+    ::setVibratoLower (inst.synth, v);
+}
+
+void Organ::setVibratoChorus (int v)
+{
+    switch (v)
+    {
+        case 0:
+            setVibrato (&inst.synth->inst_vibrato, VIB1);
+            break;
+        case 1:
+            setVibrato (&inst.synth->inst_vibrato, CHO1);
+            break;
+        case 2:
+            setVibrato (&inst.synth->inst_vibrato, VIB2);
+            break;
+        case 3:
+            setVibrato (&inst.synth->inst_vibrato, CHO2);
+            break;
+        case 4:
+            setVibrato (&inst.synth->inst_vibrato, VIB3);
+            break;
+        case 5:
+            setVibrato (&inst.synth->inst_vibrato, CHO3);
+            break;
+    }
+}
+
+void Organ::setLeslie (int v)
+{
+    setRevSelect (inst.whirl, v);
+}
+
+void Organ::setPrec (bool v)
+{
+    if (v != bool(inst.synth->percEnabled))
+        setPercussionEnabled (inst.synth, v);
+}
+
+void Organ::setPrecVol (bool v)
+{
+    if (v != bool(inst.synth->percIsSoft))
+        setPercussionVolume (inst.synth, v);
+}
+
+void Organ::setPrecDecay (bool v)
+{
+    if (v != bool(inst.synth->percIsSoft))
+        setPercussionFast (inst.synth, v);
+}
+
+void Organ::setPrecHarmSel (bool v)
+{
+    setPercussionFirst (inst.synth, v);
+}
+
+void Organ::setReverb (float v)
+{
+    setReverbMix (inst.reverb, v);
+}
+
+void Organ::setVolume (float v)
+{
+    inst.synth->swellPedalGain = inst.synth->outputLevelTrim * v;
+}
+
+void Organ::setOverdrive (bool v)
+{
+    setClean (inst.preamp, ! v);
 }
 
 void Organ::processMidi (juce::MidiBuffer& midi, int pos, int len)
