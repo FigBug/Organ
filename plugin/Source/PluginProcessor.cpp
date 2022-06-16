@@ -40,17 +40,17 @@ OrganAudioProcessor::OrganAudioProcessor()
     for (int i = 0; i < 9; i++)
     {
         auto num = juce::String (i + 1);
-        upperDrawBars[i] = addExtParam ("upper" + num, "Upper Draw Bar " + num, "Upper " + num, "", { 0.0f, 8.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
+        upperDrawBars[i] = addExtParam ("upper" + num, "Upper Draw Bar " + num, "Upper " + num, "", { -8.0f, 0.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
     }
     for (int i = 0; i < 9; i++)
     {
         auto num = juce::String (i + 1);
-        lowerDrawBars[i] = addExtParam ("lower" + num, "Lower Draw Bar " + num, "Lower " + num, "", { 0.0f, 8.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
+        lowerDrawBars[i] = addExtParam ("lower" + num, "Lower Draw Bar " + num, "Lower " + num, "", { -8.0f, 0.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
     }
     for (int i = 0; i < 2; i++)
     {
         auto num = juce::String (i + 1);
-        pedalDrawBars[i] = addExtParam ("pedal" + num, "Pedal Draw Bar " + num, "Pedal " + num, "", { 0.0f, 8.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
+        pedalDrawBars[i] = addExtParam ("pedal" + num, "Pedal Draw Bar " + num, "Pedal " + num, "", { -8.0f, 0.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
     }
 
     vibratoUpper    = addExtParam ("vibratoUpper",    "Vibrato Upper",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
@@ -114,9 +114,9 @@ void OrganAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
         lowerState.processNextMidiBuffer (midiOut, 0, numSamples, true);
         pedalState.processNextMidiBuffer (midiOut, 0, numSamples, true);
 
-        for (int i = 0; i < 9; i++) organ->setUpperDrawBar (i, upperDrawBars[i]->getUserValueInt());
-        for (int i = 0; i < 9; i++) organ->setLowerDrawBar (i, lowerDrawBars[i]->getUserValueInt());
-        for (int i = 0; i < 2; i++) organ->setPedalDrawBar (i, pedalDrawBars[i]->getUserValueInt());
+        for (int i = 0; i < 9; i++) organ->setUpperDrawBar (i, std::abs (upperDrawBars[i]->getUserValueInt()));
+        for (int i = 0; i < 9; i++) organ->setLowerDrawBar (i, std::abs (lowerDrawBars[i]->getUserValueInt()));
+        for (int i = 0; i < 2; i++) organ->setPedalDrawBar (i, std::abs (pedalDrawBars[i]->getUserValueInt()));
 
         organ->setSplit (split->getBoolValue());
         organ->setVibratoUpper (vibratoUpper->getUserValueBool());
