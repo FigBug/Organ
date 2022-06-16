@@ -5,9 +5,9 @@
         { "id": "vibratoLower", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
         { "id": "vibratoChorus", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
 
-        { "id": "lower[1..9]", "x": "prevR() + 20,prevR() + 2", "y": 48, "w": 9, "h": 70 },
+        { "id": "upper[1..9]", "x": "prevR() + 20,prevR() + 2", "y": 48, "w": 9, "h": 70 },
         { "id": "pedal[1..2]", "x": "prevR() + 20,prevR() + 2", "y": 48, "w": 9, "h": 70 },
-        { "id": "upper[1..9]", "x": "prevR() + 20,prevR() + 2", "y": 48,  "w": 9, "h": 70 },
+        { "id": "lower[1..9]", "x": "prevR() + 20,prevR() + 2", "y": 48,  "w": 9, "h": 70 },
 
         { "id": "prec", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
         { "id": "precVol", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
