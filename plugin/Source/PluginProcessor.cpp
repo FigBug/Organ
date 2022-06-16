@@ -1,13 +1,13 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-unsigned int defaultPreset[9] = { 8, 8, 6, 0, 0, 0, 0, 0, 0 };
+float defaultPreset[9] = { -8, -8, -6, 0, 0, 0, 0, 0, 0 };
 
-juce::String onOffTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "On" : "Off"; }
-juce::String pVolTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "Soft" : "Norm"; }
-juce::String pDecayTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "Fast" : "Slow"; }
-juce::String pHarmTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "2nd" : "3rd"; }
-juce::String percentTextFunction (const gin::Parameter&, float v) { return juce::String (juce::roundToInt(v * 100)) + "%"; }
+juce::String onOffTextFunction (const gin::Parameter&, float v)     { return v > 0.5f ? "On" : "Off"; }
+juce::String pVolTextFunction (const gin::Parameter&, float v)      { return v > 0.5f ? "Soft" : "Norm"; }
+juce::String pDecayTextFunction (const gin::Parameter&, float v)    { return v > 0.5f ? "Fast" : "Slow"; }
+juce::String pHarmTextFunction (const gin::Parameter&, float v)     { return v > 0.5f ? "2nd" : "3rd"; }
+juce::String percentTextFunction (const gin::Parameter&, float v)   { return juce::String (juce::roundToInt(v * 100)) + "%"; }
 
 juce::String vcTextFunction (const gin::Parameter&, float v)
 {
