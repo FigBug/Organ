@@ -62,17 +62,29 @@ void Organ::initAll()
 
 void Organ::setUpperDrawBar (int idx, int val)
 {
+    if (upper[idx] == (unsigned int)val)
+        return;
+
     upper[idx] = (unsigned int)val;
+    upperDirty = true;
 }
 
 void Organ::setLowerDrawBar (int idx, int val)
 {
+    if (lower[idx] == (unsigned int)val)
+        return;
+
     lower[idx] = (unsigned int)val;
+    lowerDirty = true;
 }
 
 void Organ::setPedalDrawBar (int idx, int val)
 {
+    if (pedal[idx] == (unsigned int)val)
+        return;
+
     pedal[idx] = (unsigned int)val;
+    pedalDirty = true;
 }
 
 void Organ::setVibratoUpper (bool v)
@@ -148,6 +160,11 @@ void Organ::setVolume (float v)
     inst.synth->swellPedalGain = inst.synth->outputLevelTrim * v;
 }
 
+void Organ::setCharacter (float f)
+{
+    fctl_biased_fat (inst.preamp, f);
+}
+
 void Organ::setOverdrive (bool v)
 {
     setClean (inst.preamp, ! v);
@@ -161,6 +178,8 @@ void Organ::processMidi (juce::MidiBuffer& midi, int pos, int len)
             continue;
         if (metadata.samplePosition >= pos + len)
             break;
+        if (! metadata.getMessage().isNoteOnOrOff())
+            continue;
         
         auto data = metadata.data;
         auto size = metadata.numBytes;
@@ -174,9 +193,9 @@ void Organ::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& mi
     const int stepSize = BUFFER_SIZE_SAMPLES;
     int pos = 0;
 
-    setDrawBars (&inst, 0, upper);
-    setDrawBars (&inst, 1, lower);
-    setDrawBars (&inst, 2, pedal);
+    if (upperDirty) setDrawBars (&inst, 0, upper);
+    if (lowerDirty) setDrawBars (&inst, 1, lower);
+    if (pedalDirty) setDrawBars (&inst, 2, pedal);
     
     while (fifo.getNumReady() < buffer.getNumSamples())
     {
@@ -207,4 +226,8 @@ void Organ::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& mi
         processMidi (midi, pos, buffer.getNumSamples() - pos);
     
     fifo.read (buffer);
+    
+    upperDirty = false;
+    lowerDirty = false;
+    pedalDirty = false;
 }

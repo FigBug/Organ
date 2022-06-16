@@ -30,6 +30,7 @@ public:
     void setReverb (float v);
     void setVolume (float v);
     void setOverdrive (bool v);
+    void setCharacter (float f);
 
 private:
     void processMidi (juce::MidiBuffer& midi, int pos, int len);
@@ -42,6 +43,10 @@ private:
     b_instance inst;
     
     gin::AudioFifo fifo { 2, 1024 };
+
+    bool upperDirty = false;
+    bool lowerDirty = false;
+    bool pedalDirty = false;
 
     unsigned int upper[9] = { 0 };
     unsigned int lower[9] = { 0 };

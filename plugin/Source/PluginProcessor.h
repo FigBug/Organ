@@ -31,7 +31,7 @@ public:
     gin::Parameter::Ptr lowerDrawBars[9];
     gin::Parameter::Ptr pedalDrawBars[2];
     gin::Parameter::Ptr vibratoUpper, vibratoLower, vibratoChorus, leslie, prec, precVol,
-                        precDecay, precHarmSel, reverb, volume, overdrive;
+                        precDecay, precHarmSel, reverb, volume, overdrive, character;
 
     juce::MidiKeyboardState upperState;
     juce::MidiKeyboardState lowerState;

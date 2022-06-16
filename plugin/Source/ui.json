@@ -1,10 +1,28 @@
 {
+    "id": "main", "w": 736, "h": 360,
     "children": [
-            { "id": "lower[1..9]", "x": "50,prevR() + 5", "y": 50, "w": 20, "h": 90 },
-            { "id": "pedal[1..2]", "x": "prevR() + 20,prevR() + 5", "y": 50, "w": 20, "h": 90 },
-            { "id": "upper[1..9]", "x": "prevR() + 20,prevR() + 5", "y": 50,  "w": 20, "h": 90 },
-            { "id": "upperKeys", "x": "50", "y": "prevB() + 50",  "w": 720, "h": 50 },
-            { "id": "lowerKeys", "x": "50", "y": "prevB() + 10",  "w": 720, "h": 50 },
-            { "id": "pedalKeys", "x": "200", "y": "prevB() + 10",  "w": 305, "h": 50 }
+        { "id": "vibratoUpper", "x": "8", "y": 48, "w": 56, "h": 70 },
+        { "id": "vibratoLower", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "vibratoChorus", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
+
+        { "id": "lower[1..9]", "x": "prevR() + 20,prevR() + 2", "y": 48, "w": 9, "h": 70 },
+        { "id": "pedal[1..2]", "x": "prevR() + 20,prevR() + 2", "y": 48, "w": 9, "h": 70 },
+        { "id": "upper[1..9]", "x": "prevR() + 20,prevR() + 2", "y": 48,  "w": 9, "h": 70 },
+
+        { "id": "prec", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "precVol", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "precDecay", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "precHarmSel", "x": "prevR() + 8", "y": 48, "w": 56, "h": 70 },
+
+        { "id": "upperKeys", "x": 8, "y": "prevB() + 8",  "w": 720, "h": 70 },
+        { "id": "lowerKeys", "x": 8, "y": "prevB() + 8",  "w": 720, "h": 70 },
+
+        { "id": "overdrive", "x": 8, "y": "prevB() + 8", "w": 56, "h": 70 },
+        { "id": "character", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 },
+
+        { "id": "pedalKeys", "x": "prevR() + 10", "y": "prevY()",  "w": 305, "h": 70 },
+
+        { "id": "reverb", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 },
+        { "id": "volume", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 }
     ]    
 }

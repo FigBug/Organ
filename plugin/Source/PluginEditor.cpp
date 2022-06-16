@@ -3,10 +3,13 @@
 #include "Drawbar.h"
 
 //==============================================================================
-OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
-    : ProcessorEditor (p), proc (p)
+OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p_)
+    : ProcessorEditor (p_), proc (p_)
 {
+    setName ("main");
+    
     upperKeyboard.setName ("upperKeys");
+    upperKeyboard.setOpaque (false);
     upperKeyboard.setMidiChannel (1);
     upperKeyboard.setMidiChannelsToDisplay (1 << 0);
     upperKeyboard.setKeyWidth (20);
@@ -15,6 +18,7 @@ OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
     addAndMakeVisible (upperKeyboard);
 
     lowerKeyboard.setName ("lowerKeys");
+    lowerKeyboard.setOpaque (false);
     lowerKeyboard.setMidiChannel (2);
     lowerKeyboard.setMidiChannelsToDisplay (1 << 1);
     lowerKeyboard.setKeyWidth (20);
@@ -23,6 +27,7 @@ OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
     addAndMakeVisible (lowerKeyboard);
 
     pedalKeyboard.setName ("pedalKeys");
+    pedalKeyboard.setOpaque (false);
     pedalKeyboard.setMidiChannel (3);
     pedalKeyboard.setMidiChannelsToDisplay (1 << 2);
     pedalKeyboard.setKeyWidth (20);
@@ -30,13 +35,22 @@ OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p)
     pedalKeyboard.setScrollButtonsVisible (false);
     addAndMakeVisible (pedalKeyboard);
     
-    for (auto pp : p.getPluginParameters())
-    {
-        auto pc = new Drawbar (pp);
+    for (auto p : proc.upperDrawBars)   addAndMakeVisible (controls.add (new Drawbar (p)));
+    for (auto p : proc.lowerDrawBars)   addAndMakeVisible (controls.add (new Drawbar (p)));
+    for (auto p : proc.pedalDrawBars)   addAndMakeVisible (controls.add (new Drawbar (p)));
 
-        addAndMakeVisible (pc);
-        controls.add (pc);
-    }
+    addAndMakeVisible (controls.add (new gin::Switch (proc.vibratoUpper)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.vibratoLower)));
+    addAndMakeVisible (controls.add (new gin::Select (proc.vibratoChorus)));
+    addAndMakeVisible (controls.add (new gin::Select (proc.leslie)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.prec)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.precVol)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.precDecay)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.precHarmSel)));
+    addAndMakeVisible (controls.add (new gin::Knob (proc.reverb)));
+    addAndMakeVisible (controls.add (new gin::Knob (proc.volume)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.overdrive)));
+    addAndMakeVisible (controls.add (new gin::Knob (proc.character)));
 
     setGridSize (15, 5);
 
@@ -56,11 +70,4 @@ void OrganAudioProcessorEditor::paint (juce::Graphics& g)
 void OrganAudioProcessorEditor::resized()
 {
     ProcessorEditor::resized ();
-
-    int i = 0;
-    for (auto pp : proc.getPluginParameters())
-    {
-        componentForParam (*pp)->setBounds (getGridArea (i % 9, i / 9));
-        i++;
-    }
 }

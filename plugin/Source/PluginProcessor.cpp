@@ -3,6 +3,37 @@
 
 unsigned int defaultPreset[9] = { 8, 8, 6, 0, 0, 0, 0, 0, 0 };
 
+juce::String onOffTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "On" : "Off"; }
+juce::String pVolTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "Soft" : "Norm"; }
+juce::String pDecayTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "Fast" : "Slow"; }
+juce::String pHarmTextFunction (const gin::Parameter&, float v) { return v > 0.5f ? "2nd" : "3rd"; }
+juce::String percentTextFunction (const gin::Parameter&, float v) { return juce::String (juce::roundToInt(v * 100)) + "%"; }
+
+juce::String vcTextFunction (const gin::Parameter&, float v)
+{
+    switch (juce::roundToInt (v))
+    {
+        case 0: return "V1";
+        case 1: return "C1";
+        case 2: return "V2";
+        case 3: return "C2";
+        case 4: return "V3";
+        case 5: return "C3";
+        default: return "";
+    }
+}
+
+juce::String lesTextFunction (const gin::Parameter&, float v)
+{
+    switch (juce::roundToInt (v))
+    {
+        case 0: return "Fast";
+        case 1: return "Stop";
+        case 2: return "Slow";
+        default: return "";
+    }
+}
+
 //==============================================================================
 OrganAudioProcessor::OrganAudioProcessor()
 {
@@ -22,17 +53,18 @@ OrganAudioProcessor::OrganAudioProcessor()
         pedalDrawBars[i] = addExtParam ("pedal" + num, "Pedal Draw Bar " + num, "Pedal " + num, "", { 0.0f, 8.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
     }
 
-    vibratoUpper    = addExtParam ("vibratoUpper",    "Vibrate Upper",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    vibratoLower    = addExtParam ("vibratoLower",    "Vibrate Lower",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    vibratoChorus   = addExtParam ("vibratoChorus",   "Vibrate & Chorus", "", "", { 0.0f, 5.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    leslie          = addExtParam ("leslie",          "Leslie",           "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    prec            = addExtParam ("prec",            "Perc",             "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    precVol         = addExtParam ("precVol",         "Perc Volume",      "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    precDecay       = addExtParam ("precDecay",       "Prec Decay",       "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    precHarmSel     = addExtParam ("precHarmSel",     "Perc Harm Sel",    "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f);
-    reverb          = addExtParam ("reverb",          "Reverb",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f);
-    volume          = addExtParam ("volume",          "Volume",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f);
-    overdrive       = addExtParam ("overdrive",       "Overdrive",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f);
+    vibratoUpper    = addExtParam ("vibratoUpper",    "Vibrato Upper",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
+    vibratoLower    = addExtParam ("vibratoLower",    "Vibrato Lower",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
+    vibratoChorus   = addExtParam ("vibratoChorus",   "Vib & Chrs",       "", "", { 0.0f, 5.0f, 1.0f, 1.0f}, 0.0f, 0.0f, vcTextFunction);
+    leslie          = addExtParam ("leslie",          "Leslie",           "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, lesTextFunction);
+    prec            = addExtParam ("prec",            "Perc",             "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
+    precVol         = addExtParam ("precVol",         "Perc Volume",      "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pVolTextFunction);
+    precDecay       = addExtParam ("precDecay",       "Prec Decay",       "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pDecayTextFunction);
+    precHarmSel     = addExtParam ("precHarmSel",     "Perc Harm Sel",    "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pHarmTextFunction);
+    reverb          = addExtParam ("reverb",          "Reverb",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, percentTextFunction);
+    volume          = addExtParam ("volume",          "Volume",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, percentTextFunction);
+    overdrive       = addExtParam ("overdrive",       "Overdrive",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
+    character       = addExtParam ("character",       "Character",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, percentTextFunction);
 }
 
 OrganAudioProcessor::~OrganAudioProcessor()
@@ -91,7 +123,8 @@ void OrganAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::
         organ->setPrecHarmSel (precHarmSel->getUserValueBool());
         organ->setReverb (reverb->getUserValue());
         organ->setVolume (volume->getUserValue());
-        organ->setOverdrive (overdrive->getUserValue());
+        organ->setOverdrive (overdrive->getUserValueBool());
+        organ->setCharacter (character->getUserValueBool());
 
         organ->processBlock (buffer, midi);
     }
