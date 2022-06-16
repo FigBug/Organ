@@ -51,6 +51,7 @@ OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p_)
     addAndMakeVisible (controls.add (new gin::Knob (proc.volume)));
     addAndMakeVisible (controls.add (new gin::Switch (proc.overdrive)));
     addAndMakeVisible (controls.add (new gin::Knob (proc.character)));
+    addAndMakeVisible (controls.add (new gin::Switch (proc.split)));
 
     setGridSize (15, 5);
 

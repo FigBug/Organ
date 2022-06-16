@@ -19,10 +19,12 @@
 
         { "id": "overdrive", "x": 8, "y": "prevB() + 8", "w": 56, "h": 70 },
         { "id": "character", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 },
+        { "id": "leslie", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 },
 
         { "id": "pedalKeys", "x": "prevR() + 10", "y": "prevY()",  "w": 305, "h": 70 },
 
         { "id": "reverb", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 },
-        { "id": "volume", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 }
+        { "id": "volume", "x": "prevR() + 8", "y": "prevY()", "w": 56, "h": 70 },
+        { "id": "split", "x": "getX('/main/precHarmSel')", "y": "prevY()", "w": 56, "h": 70 }
     ]    
 }

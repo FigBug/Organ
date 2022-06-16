@@ -31,11 +31,13 @@ public:
     gin::Parameter::Ptr lowerDrawBars[9];
     gin::Parameter::Ptr pedalDrawBars[2];
     gin::Parameter::Ptr vibratoUpper, vibratoLower, vibratoChorus, leslie, prec, precVol,
-                        precDecay, precHarmSel, reverb, volume, overdrive, character;
+                        precDecay, precHarmSel, reverb, volume, overdrive, character, split;
 
     juce::MidiKeyboardState upperState;
     juce::MidiKeyboardState lowerState;
     juce::MidiKeyboardState pedalState;
+
+    juce::MidiBuffer midiOut;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrganAudioProcessor)

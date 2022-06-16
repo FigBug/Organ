@@ -124,7 +124,16 @@ void Organ::setVibratoChorus (int v)
 
 void Organ::setLeslie (int v)
 {
-    setRevSelect (inst.whirl, v);
+    if (leslie != v)
+    {
+        leslie = v;
+        switch (v)
+        {
+            case 0: useRevOption (inst.whirl, 0, 2); break;
+            case 1: useRevOption (inst.whirl, 4, 2); break;
+            case 2: useRevOption (inst.whirl, 8, 2); break;
+        }
+    }
 }
 
 void Organ::setPrec (bool v)
@@ -168,6 +177,11 @@ void Organ::setCharacter (float f)
 void Organ::setOverdrive (bool v)
 {
     setClean (inst.preamp, ! v);
+}
+
+void Organ::setSplit (bool s)
+{
+    split = s;
 }
 
 void Organ::processMidi (juce::MidiBuffer& midi, int pos, int len)
@@ -230,4 +244,46 @@ void Organ::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& mi
     upperDirty = false;
     lowerDirty = false;
     pedalDirty = false;
+}
+
+void Organ::preprocessMidi (juce::MidiBuffer& src, juce::MidiBuffer& dst)
+{
+    dst.clear();
+    if (! split)
+    {
+        dst.addEvents (src, 0, -1, 0);
+        return;
+    }
+
+    for (auto event : src)
+    {
+        auto m = event.getMessage();
+
+        if (m.isNoteOnOrOff())
+        {
+            auto n = m.getNoteNumber();
+            auto c = 0;
+
+            if (n >= 84)
+            {
+                n = n - 84 + 36;
+                c = 1;
+            }
+            else if (n >= 24)
+            {
+                n = n - 24 + 36;
+                c = 2;
+            }
+            else
+            {
+                n = n + 24;
+                c = 3;
+            }
+
+            m.setNoteNumber (n);
+            m.setChannel (c);
+        }
+
+        dst.addEvent(m, event.samplePosition);
+    }
 }
