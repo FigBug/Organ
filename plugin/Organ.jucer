@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="C56KyA" name="Organ" projectType="audioplug" companyName="SocaLabs"
-              reportAppUsage="0" displaySplashScreen="0" pluginFormats="buildAU,buildStandalone,buildVST,buildVST3"
+              reportAppUsage="0" displaySplashScreen="1" pluginFormats="buildAU,buildStandalone,buildVST,buildVST3"
               pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturerCode="Soca" pluginCode="SLor" pluginAUMainType="'aumu'"
               cppLanguageStandard="17" pluginChannelConfigs="{0,2}" version="1.0.0"
               jucerFormatVersion="1" useAppConfig="0" addUsingNamespaceToJuceHeader="0"
-              defines="JUCE_MODAL_LOOPS_PERMITTED=1">
+              defines="JUCE_DISPLAY_SPLASH_SCREEN=0&#10;JUCE_MODAL_LOOPS_PERMITTED=1">
   <MAINGROUP id="Hs1HPA" name="Organ">
     <GROUP id="{64226C5F-B1F9-A1D8-F7EC-41424754AED6}" name="setBfree">
       <GROUP id="{07FD6E67-E9A2-6D1C-92FF-63743A79E24F}" name="b_whirl">
