@@ -83,9 +83,8 @@ if [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
   cmake --preset ninja-gcc
   cmake --build --preset ninja-gcc --config Release
 
-  find .
   cp -R "$ROOT/Builds/ninja-gcc/${PLUGIN}_artefacts/Release/LV2/$PLUGIN.lv2" "$ROOT/ci/bin"
-  cp -R "$ROOT/Builds/ninja-gcc/${PLUGIN}_artefacts/Release/VST/$PLUGIN.so" "$ROOT/ci/bin"
+  cp -R "$ROOT/Builds/ninja-gcc/${PLUGIN}_artefacts/Release/VST/lib$PLUGIN.so" "$ROOT/ci/bin/$PLUGIN.so"
   cp -R "$ROOT/Builds/ninja-gcc/${PLUGIN}_artefacts/Release/VST3/$PLUGIN.vst3" "$ROOT/ci/bin"
 
   cd "$ROOT/ci/bin"
