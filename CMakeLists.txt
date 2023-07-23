@@ -1,4 +1,14 @@
 cmake_minimum_required (VERSION 3.24.0 FATAL_ERROR)
+
+#
+# Set for each plugin
+#
+set (PLUGIN_NAME Organ)
+set (BUNDLE_ID com.socalabs.organ)
+set (AU_ID OrganAU)
+set (LV2_URI https://socalabs.com/organ/)
+set (PLUGIN_CODE SLor)
+
 set (CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set (CMAKE_SUPPRESS_REGENERATION true)
@@ -8,18 +18,14 @@ set_property (GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug")
 set (CMAKE_C_FLAGS_DEVELOPMENT ${CMAKE_C_FLAGS_RELEASE})
 set (CMAKE_CXX_FLAGS_DEVELOPMENT ${CMAKE_CXX_FLAGS_RELEASE})
 
-project (
-	Organ
-	VERSION 1.0.0
-	LANGUAGES CXX C
-	HOMEPAGE_URL "https://socalabs.com/")
+project (${PLUGIN_NAME} VERSION 1.0.0 LANGUAGES CXX C HOMEPAGE_URL "https://socalabs.com/")
 
 include (CMakeDependentOption)
 
-set_property (DIRECTORY APPEND PROPERTY LABELS Organ)
+set_property (DIRECTORY APPEND PROPERTY LABELS ${PLUGIN_NAME})
 
 set_property (DIRECTORY APPEND PROPERTY LABELS SocaLabs)
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Organ_Standalone)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PLUGIN_NAME}_Standalone)
 
 set (CMAKE_OSX_DEPLOYMENT_TARGET 10.9)
 
@@ -82,51 +88,51 @@ endforeach()
 
 set_property (DIRECTORY APPEND PROPERTY LABELS Assets)
 
-juce_add_binary_data (Organ_Assets SOURCES
+juce_add_binary_data (${PLUGIN_NAME}_Assets SOURCES
 						"plugin/Source/ui.json"
 					 )
 
-set_target_properties(Organ_Assets PROPERTIES UNITY_BUILD ON UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 50)
+set_target_properties(${PLUGIN_NAME}_Assets PROPERTIES UNITY_BUILD ON UNITY_BUILD_MODE BATCH UNITY_BUILD_BATCH_SIZE 50)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 juce_set_vst2_sdk_path (${CMAKE_SOURCE_DIR}/modules/plugin_sdk/vstsdk2.4)
 
-juce_add_plugin (Organ
-				 PRODUCT_NAME Organ
+juce_add_plugin (${PLUGIN_NAME}
+				 PRODUCT_NAME ${PLUGIN_NAME}
 				 VERSION "${Organ_VERSION}"
 				 COMPANY_NAME SocaLabs
 				 COMPANY_WEBSITE "https://socalabs.com/"
-				 BUNDLE_ID com.socalabs.organ
+				 BUNDLE_ID ${BUNDLE_ID}
 				 FORMATS ${FORMATS}
 				 PLUGIN_MANUFACTURER_CODE Soca
-				 PLUGIN_CODE SLor
+				 PLUGIN_CODE ${PLUGIN_CODE}
 				 IS_SYNTH ON
 				 NEEDS_MIDI_INPUT ON
 				 EDITOR_WANTS_KEYBOARD_FOCUS ON
 				 VST2_CATEGORY kPlugCategSynth
 				 VST3_CATEGORIES Instrument
 				 AU_MAIN_TYPE kAudioUnitType_MusicDevice
-				 AU_EXPORT_PREFIX OrganAU
+				 AU_EXPORT_PREFIX ${AU_ID}
 				 AU_SANDBOX_SAFE FALSE
-				 LV2URI https://socalabs.com/organ/)
+				 LV2URI LV2_URI)
 
 file (GLOB_RECURSE source_files CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin/*.c
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin/*.h)
 
-target_sources (Organ PRIVATE ${source_files})
+target_sources (${PLUGIN_NAME} PRIVATE ${source_files})
 source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR}/plugin PREFIX Source FILES ${source_files})
 
 file (GLOB_RECURSE asset_files CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_SOURCE_DIR}/Assets/*)
 
-target_sources (Organ PRIVATE ${asset_files})
+target_sources (${PLUGIN_NAME} PRIVATE ${asset_files})
 source_group (TREE ${CMAKE_CURRENT_SOURCE_DIR}/Assets PREFIX Assets FILES ${asset_files})
 
-target_link_libraries (Organ PRIVATE
-						Organ_Assets
+target_link_libraries (${PLUGIN_NAME} PRIVATE
+						${PLUGIN_NAME}_Assets
 
 						gin
 						gin_dsp
@@ -151,13 +157,13 @@ target_link_libraries (Organ PRIVATE
     					juce::juce_recommended_config_flags
 					)
 
-target_include_directories (Organ PRIVATE modules/fmt/include)
-target_include_directories (Organ PRIVATE modules/ASIO/common)
-target_include_directories (Organ PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Source/Definitions)
+target_include_directories (${PLUGIN_NAME} PRIVATE modules/fmt/include)
+target_include_directories (${PLUGIN_NAME} PRIVATE modules/ASIO/common)
+target_include_directories (${PLUGIN_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Source/Definitions)
 
-juce_generate_juce_header (Organ)
+juce_generate_juce_header (${PLUGIN_NAME})
 
-target_compile_definitions (Organ PRIVATE
+target_compile_definitions (${PLUGIN_NAME} PRIVATE
 								JUCE_DISPLAY_SPLASH_SCREEN=0
 								JUCE_COREGRAPHICS_DRAW_ASYNC=1
 								JUCE_MODAL_LOOPS_PERMITTED=1
@@ -211,7 +217,7 @@ if (WIN32)
 endif()
 
 if(UNIX AND NOT APPLE)
-	target_link_libraries (Organ PRIVATE curl)
+	target_link_libraries (${PLUGIN_NAME} PRIVATE curl)
 endif()
 
 
@@ -221,4 +227,4 @@ else()
 	set (dest "Applications")
 endif()
 
-install (TARGETS Organ DESTINATION "${dest}")
+install (TARGETS ${PLUGIN_NAME} DESTINATION "${dest}")
