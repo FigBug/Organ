@@ -18,7 +18,7 @@ set_property (GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug")
 set (CMAKE_C_FLAGS_DEVELOPMENT ${CMAKE_C_FLAGS_RELEASE})
 set (CMAKE_CXX_FLAGS_DEVELOPMENT ${CMAKE_CXX_FLAGS_RELEASE})
 
-project (${PLUGIN_NAME} VERSION 1.0.0 LANGUAGES CXX C HOMEPAGE_URL "https://socalabs.com/")
+project (${PLUGIN_NAME} VERSION 1.0.1 LANGUAGES CXX C HOMEPAGE_URL "https://socalabs.com/")
 
 include (CMakeDependentOption)
 
@@ -115,7 +115,7 @@ juce_add_plugin (${PLUGIN_NAME}
 				 AU_MAIN_TYPE kAudioUnitType_MusicDevice
 				 AU_EXPORT_PREFIX ${AU_ID}
 				 AU_SANDBOX_SAFE FALSE
-				 LV2URI LV2_URI)
+				 LV2URI ${LV2_URI})
 
 file (GLOB_RECURSE source_files CONFIGURE_DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin/*.cpp

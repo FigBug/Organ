@@ -59,7 +59,7 @@ OrganAudioProcessor::OrganAudioProcessor()
     leslie          = addExtParam ("leslie",          "Leslie",           "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, lesTextFunction);
     prec            = addExtParam ("prec",            "Perc",             "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 1.0f, 0.0f, onOffTextFunction);
     precVol         = addExtParam ("precVol",         "Perc Volume",      "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pVolTextFunction);
-    precDecay       = addExtParam ("precDecay",       "Prec Decay",       "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pDecayTextFunction);
+    precDecay       = addExtParam ("precDecay",       "Perc Decay",       "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pDecayTextFunction);
     precHarmSel     = addExtParam ("precHarmSel",     "Perc Harm Sel",    "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pHarmTextFunction);
     reverb          = addExtParam ("reverb",          "Reverb",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.2f, 0.0f, percentTextFunction);
     volume          = addExtParam ("volume",          "Volume",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 1.0f, 0.0f, percentTextFunction);
@@ -145,7 +145,7 @@ bool OrganAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* OrganAudioProcessor::createEditor()
 {
-    return new OrganAudioProcessorEditor (*this);
+    return new gin::ScaledPluginEditor (new OrganAudioProcessorEditor (*this), state);
 }
 
 //==============================================================================
