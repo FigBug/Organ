@@ -36,6 +36,7 @@ static juce::String lesTextFunction (const gin::Parameter&, float v)
 
 //==============================================================================
 OrganAudioProcessor::OrganAudioProcessor()
+    : gin::Processor (false, gin::ProcessorOptions().withAdditionalCredits ({"Fredrik Kilander, Robin Gareus, Will Panther"}))
 {
     for (int i = 0; i < 9; i++)
     {
@@ -68,6 +69,7 @@ OrganAudioProcessor::OrganAudioProcessor()
     split           = addExtParam ("split",           "Split Keys",       "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
 
     midiOut.ensureSize (1024);
+    init();
 }
 
 OrganAudioProcessor::~OrganAudioProcessor()

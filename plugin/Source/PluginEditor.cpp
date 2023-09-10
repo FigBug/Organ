@@ -6,7 +6,6 @@
 OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p_)
     : ProcessorEditor (p_), proc (p_)
 {
-    additionalProgramming = "Fredrik Kilander, Robin Gareus, Will Panther";
     setName ("main");
     
     upperKeyboard.setName ("upperKeys");
