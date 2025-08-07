@@ -28,7 +28,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Binaries
+          name: Binaries ${{ runner.os }}
           path: ci/bin/*.zip
           retention-days: 30
 
