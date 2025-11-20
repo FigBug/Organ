@@ -15,7 +15,7 @@ public:
     void resized() override;
 
 private:
-    gin::Layout layout {*this};
+    gin::LayoutSupport layout {*this};
 
     OrganAudioProcessor& proc;
 

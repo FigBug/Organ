@@ -55,7 +55,11 @@ OrganAudioProcessorEditor::OrganAudioProcessorEditor (OrganAudioProcessor& p_)
 
     setGridSize (15, 5);
 
-    layout.setLayout ("ui.json", juce::File (__FILE__).getSiblingFile ("ui.json"));
+#if JUCE_DEBUG
+    layout.setLayout ({juce::File (__FILE__).getSiblingFile ("ui.json")});
+#else
+    layout.setLayout (juce::StringArray ("ui.json"));
+#endif
 }
 
 OrganAudioProcessorEditor::~OrganAudioProcessorEditor()
