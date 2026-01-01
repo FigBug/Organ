@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - '**'
+      - 'v*'
 
 jobs:
   build:
@@ -41,8 +41,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download Artifacts
         uses: actions/download-artifact@v3
-      - name: Create Release
-        run: ./release.sh
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            Binaries Linux/*.zip
+            Binaries macOS/*.zip
+            Binaries Windows/*.zip
