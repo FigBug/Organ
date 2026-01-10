@@ -35,8 +35,16 @@ static juce::String lesTextFunction (const gin::Parameter&, float v)
 }
 
 //==============================================================================
+static gin::ProcessorOptions createProcessorOptions()
+{
+    gin::ProcessorOptions opts;
+    opts.withAdditionalCredits ({"Fredrik Kilander, Robin Gareus, Will Panther"});
+    opts.hasMidiLearn = true;
+    return opts;
+}
+
 OrganAudioProcessor::OrganAudioProcessor()
-    : gin::Processor (false, gin::ProcessorOptions().withAdditionalCredits ({"Fredrik Kilander, Robin Gareus, Will Panther"}))
+    : gin::Processor (false, createProcessorOptions())
 {
     for (int i = 0; i < 9; i++)
     {
@@ -105,6 +113,9 @@ void OrganAudioProcessor::releaseResources()
 void OrganAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midi)
 {
     juce::ScopedNoDenormals noDenormals;
+
+    if (midiLearn)
+        midiLearn->processBlock (midi, buffer.getNumSamples());
 
 	buffer.clear ();
     auto numSamples = buffer.getNumSamples();
