@@ -43,7 +43,7 @@
 #ifdef _MSC_VER 
  #define strncasecmp _strnicmp
  #define strcasecmp _stricmp
-#elif defined __APPLE__
+#else
  #include <strings.h>
 #endif
 
