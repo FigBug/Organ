@@ -43,7 +43,7 @@ static gin::ProcessorOptions createProcessorOptions()
 }
 
 OrganAudioProcessor::OrganAudioProcessor()
-    : gin::Processor (false, createProcessorOptions())
+    : gin::Processor (BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo()), false, createProcessorOptions())
 {
     for (int i = 0; i < 9; i++)
     {
