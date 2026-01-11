@@ -37,10 +37,9 @@ static juce::String lesTextFunction (const gin::Parameter&, float v)
 //==============================================================================
 static gin::ProcessorOptions createProcessorOptions()
 {
-    gin::ProcessorOptions opts;
-    opts.withAdditionalCredits ({"Fredrik Kilander, Robin Gareus, Will Panther"});
-    opts.hasMidiLearn = true;
-    return opts;
+    return gin::ProcessorOptions()
+        .withAdditionalCredits ({"Fredrik Kilander, Robin Gareus, Will Panther"})
+        .withMidiLearn();
 }
 
 OrganAudioProcessor::OrganAudioProcessor()
