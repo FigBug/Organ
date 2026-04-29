@@ -33,3 +33,7 @@
 
 JuceLibraryCode
 Builds
+bin
+Installer/macOS/bin
+Installer/win/bin
+Installer/_flat_presets
