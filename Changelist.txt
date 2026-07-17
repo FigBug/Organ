@@ -1,3 +1,6 @@
+1.0.8:
+- Added crash reporting
+
 1.0.7:
 - VST2 install path
 
