@@ -5,35 +5,48 @@
 
 float defaultPreset[9] = { -8, -8, -6, 0, 0, 0, 0, 0, 0 };
 
-static juce::String onOffTextFunction (const gin::Parameter&, float v)     { return v > 0.5f ? "On" : "Off"; }
-static juce::String pVolTextFunction (const gin::Parameter&, float v)      { return v > 0.5f ? "Soft" : "Norm"; }
-static juce::String pDecayTextFunction (const gin::Parameter&, float v)    { return v > 0.5f ? "Fast" : "Slow"; }
-static juce::String pHarmTextFunction (const gin::Parameter&, float v)     { return v > 0.5f ? "2nd" : "3rd"; }
-static juce::String percentTextFunction (const gin::Parameter&, float v)   { return juce::String (juce::roundToInt(v * 100)) + "%"; }
-
-static juce::String vcTextFunction (const gin::Parameter&, float v)
+// Builds a conversion function for a two state parameter: values above 0.5 display
+// as onText, others as offText, and typed text maps back to 1 or 0
+static gin::Parameter::ConversionFunction switchConversion (juce::String offText, juce::String onText)
 {
-    switch (juce::roundToInt (v))
+    return [offText, onText] (const gin::Parameter&, const std::variant<float, juce::String>& v) -> std::variant<float, juce::String>
     {
-        case 0: return "V1";
-        case 1: return "C1";
-        case 2: return "V2";
-        case 3: return "C2";
-        case 4: return "V3";
-        case 5: return "C3";
-        default: return "";
-    }
+        if (auto f = std::get_if<float> (&v))
+            return *f > 0.5f ? onText : offText;
+
+        auto t = std::get<juce::String> (v).trim();
+        if (t.equalsIgnoreCase (onText))  return 1.0f;
+        if (t.equalsIgnoreCase (offText)) return 0.0f;
+        return t.getFloatValue();
+    };
 }
 
-static juce::String lesTextFunction (const gin::Parameter&, float v)
+// Builds a conversion function for a choice parameter: the value is an index into
+// names, and typed text maps back to the index of the matching name
+static gin::Parameter::ConversionFunction choicesConversion (juce::StringArray names)
 {
-    switch (juce::roundToInt (v))
+    return [names] (const gin::Parameter&, const std::variant<float, juce::String>& v) -> std::variant<float, juce::String>
     {
-        case 0: return "Stop";
-        case 1: return "Slow";
-        case 2: return "Fast";
-        default: return "";
-    }
+        if (auto f = std::get_if<float> (&v))
+        {
+            auto idx = juce::roundToInt (*f);
+            return juce::isPositiveAndBelow (idx, names.size()) ? names[idx] : juce::String();
+        }
+
+        auto t = std::get<juce::String> (v).trim();
+        for (int i = 0; i < names.size(); i++)
+            if (t.equalsIgnoreCase (names[i]))
+                return float (i);
+        return t.getFloatValue();
+    };
+}
+
+static std::variant<float, juce::String> percentConversionFunction (const gin::Parameter&, const std::variant<float, juce::String>& v)
+{
+    if (auto f = std::get_if<float> (&v))
+        return juce::String (juce::roundToInt (*f * 100)) + "%";
+
+    return std::get<juce::String> (v).getFloatValue() / 100.0f;
 }
 
 //==============================================================================
@@ -86,19 +99,19 @@ OrganAudioProcessor::OrganAudioProcessor()
         pedalDrawBars[i] = addExtParam ("pedal" + num, "Pedal Draw Bar " + num, "Pedal " + num, "", { -8.0f, 0.0f, 1.0f, 1.0f}, defaultPreset[i], 0.0f);
     }
 
-    vibratoUpper    = addExtParam ("vibratoUpper",    "Vibrato Upper",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
-    vibratoLower    = addExtParam ("vibratoLower",    "Vibrato Lower",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
-    vibratoChorus   = addExtParam ("vibratoChorus",   "Vib & Chrs",       "", "", { 0.0f, 5.0f, 1.0f, 1.0f}, 0.0f, 0.0f, vcTextFunction);
-    leslie          = addExtParam ("leslie",          "Leslie",           "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, lesTextFunction);
-    prec            = addExtParam ("prec",            "Perc",             "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 1.0f, 0.0f, onOffTextFunction);
-    precVol         = addExtParam ("precVol",         "Perc Volume",      "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pVolTextFunction);
-    precDecay       = addExtParam ("precDecay",       "Perc Decay",       "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pDecayTextFunction);
-    precHarmSel     = addExtParam ("precHarmSel",     "Perc Harm Sel",    "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, pHarmTextFunction);
-    reverb          = addExtParam ("reverb",          "Reverb",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.2f, 0.0f, percentTextFunction);
-    volume          = addExtParam ("volume",          "Volume",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 1.0f, 0.0f, percentTextFunction);
-    overdrive       = addExtParam ("overdrive",       "Overdrive",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
-    character       = addExtParam ("character",       "Character",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, percentTextFunction);
-    split           = addExtParam ("split",           "Split Keys",       "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, onOffTextFunction);
+    vibratoUpper    = addExtParam ("vibratoUpper",    "Vibrato Upper",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("Off", "On"));
+    vibratoLower    = addExtParam ("vibratoLower",    "Vibrato Lower",    "", "", { 0.0f, 1.0f, 1.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("Off", "On"));
+    vibratoChorus   = addExtParam ("vibratoChorus",   "Vib & Chrs",       "", "", { 0.0f, 5.0f, 1.0f, 1.0f}, 0.0f, 0.0f, choicesConversion ({ "V1", "C1", "V2", "C2", "V3", "C3" }));
+    leslie          = addExtParam ("leslie",          "Leslie",           "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, choicesConversion ({ "Stop", "Slow", "Fast" }));
+    prec            = addExtParam ("prec",            "Perc",             "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 1.0f, 0.0f, switchConversion ("Off", "On"));
+    precVol         = addExtParam ("precVol",         "Perc Volume",      "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("Norm", "Soft"));
+    precDecay       = addExtParam ("precDecay",       "Perc Decay",       "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("Slow", "Fast"));
+    precHarmSel     = addExtParam ("precHarmSel",     "Perc Harm Sel",    "", "", { 0.0f, 2.0f, 1.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("3rd", "2nd"));
+    reverb          = addExtParam ("reverb",          "Reverb",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.2f, 0.0f, percentConversionFunction);
+    volume          = addExtParam ("volume",          "Volume",           "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 1.0f, 0.0f, percentConversionFunction);
+    overdrive       = addExtParam ("overdrive",       "Overdrive",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("Off", "On"));
+    character       = addExtParam ("character",       "Character",        "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, percentConversionFunction);
+    split           = addExtParam ("split",           "Split Keys",       "", "", { 0.0f, 1.0f, 0.0f, 1.0f}, 0.0f, 0.0f, switchConversion ("Off", "On"));
 
     midiOut.ensureSize (1024);
     init();
