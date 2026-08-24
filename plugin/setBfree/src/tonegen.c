@@ -332,7 +332,8 @@ initValues (struct b_tonegen* t)
 	t->wheel_Harmonics[0]         = 1.0;
 	//t->wheel_Harmonics  = { 1.0 }; /** < amplitudes of tonewheel harmonics */
 
-	t->outputGain = 1.0;
+	t->targetGain = 1.0;
+	t->currentGain = 1.0;
 
 #ifdef HIPASS_PERCUSSION
 	t->pz = 0;
@@ -2821,6 +2822,8 @@ initToneGenerator (struct b_tonegen* t, void* m, double SampleRateD)
 		t->eqvSet[i] = '\0';
 	}
 
+	t->gainTimeConstant = 156.825f / SampleRateD; // ~ 25Hz LPF
+
 	if (t->envAtkClkMinLength < 0) {
 		t->envAtkClkMinLength = floor (SampleRateD * 8.0 / 22050.0);
 	}
@@ -3513,35 +3516,43 @@ oscGenerateFragment (struct b_tonegen* t, float* buf, size_t lengthSamples)
 			t->pz = temp;
 			pp    = prcBuffer;
 #endif /* HIPASS_PERCUSSION */
-			t->outputGain = t->swellPedalGain * t->percDrawbarGain;
+			t->targetGain = t->swellPedalGain * t->percDrawbarGain;
+			float a = t->gainTimeConstant;
 			if (t->oldRouting & RT_VIB) {                       /* If vibrato is on */
 				for (i = 0; i < BUFFER_SIZE_SAMPLES; i++) { /* Perc and vibrato */
+					t->currentGain += a * (t->targetGain - t->currentGain) + 1e-12;
 					*yptr++ =
-					    (t->outputGain * KEYCOMPLEVEL *
+					    (t->currentGain * KEYCOMPLEVEL *
 					     ((*xp++) + (*vp++) + ((*pp++) * t->percEnvGain)));
 					t->percEnvGain *= t->percEnvGainDecay;
 					KEYCOMPCHASE ();
 				}
 			} else { /* Percussion only */
 				for (i = 0; i < BUFFER_SIZE_SAMPLES; i++) {
+					t->currentGain += a * (t->targetGain - t->currentGain) + 1e-12;
 					*yptr++ =
-					    (t->outputGain * KEYCOMPLEVEL * ((*xp++) + ((*pp++) * t->percEnvGain)));
+					    (t->currentGain * KEYCOMPLEVEL * ((*xp++) + ((*pp++) * t->percEnvGain)));
 					t->percEnvGain *= t->percEnvGainDecay;
 					KEYCOMPCHASE ();
 				}
 			}
 
 		} else if (t->oldRouting & RT_VIB) { /* No percussion and vibrato */
-
+			t->targetGain = t->swellPedalGain;
+			float a = t->gainTimeConstant;
 			for (i = 0; i < BUFFER_SIZE_SAMPLES; i++) {
+				t->currentGain += a * (t->targetGain - t->currentGain) + 1e-12;
 				*yptr++ =
-				    (t->swellPedalGain * KEYCOMPLEVEL * ((*xp++) + (*vp++)));
+				    (t->currentGain * KEYCOMPLEVEL * ((*xp++) + (*vp++)));
 				KEYCOMPCHASE ();
 			}
 		} else { /* No percussion and no vibrato */
+			t->targetGain = t->swellPedalGain;
+			float a = t->gainTimeConstant;
 			for (i = 0; i < BUFFER_SIZE_SAMPLES; i++) {
+				t->currentGain += a * (t->targetGain - t->currentGain) + 1e-12;
 				*yptr++ =
-				    (t->swellPedalGain * KEYCOMPLEVEL * (*xp++));
+				    (t->currentGain * KEYCOMPLEVEL * (*xp++));
 				KEYCOMPCHASE ();
 			}
 		}
@@ -3594,7 +3605,7 @@ static const ConfigDoc doc[] = {
 	{ "osc.eq.r4y", CFG_DOUBLE, "0.0", "EQ spline parameter", INCOMPLETE_DOC },
 	{ "osc.eqv.ceiling", CFG_DOUBLE, "1.0", "Normalize EQ parameters.", INCOMPLETE_DOC },
 	{ "osc.eqv.<oscnum>", CFG_DOUBLE, "-", "oscnum=[0..127], value: [0..osc.eqv.ceiling]; default values are calculated depending on selected osc.eq.macro and tone-generator-model.", INCOMPLETE_DOC },
-	{ "osc.harmonic.<h>", CFG_DOUBLE, "-", "speficy level of given harmonic number.", INCOMPLETE_DOC },
+	{ "osc.harmonic.<h>", CFG_DOUBLE, "-", "specify level of given harmonic number.", INCOMPLETE_DOC },
 	{ "osc.harmonic.w<w>.f<h>", CFG_DOUBLE, "-", "w: number of wheel [0..91], h: harmonic number", INCOMPLETE_DOC },
 	{ "osc.terminal.t<t>.w<w>", CFG_DOUBLE, "-", "t,w: wheel-number [0..91]", INCOMPLETE_DOC },
 	{ "osc.taper.k<key>.b<bus>.t<wheel>", CFG_DOUBLE, "-", "customize tapering model. Specify level of [key, drawbar, tonewheel].", INCOMPLETE_DOC },

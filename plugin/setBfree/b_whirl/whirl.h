@@ -263,5 +263,6 @@ extern void fsetDrumFilterGain (struct b_whirl* w, float v);
 extern void computeRotationSpeeds (struct b_whirl* w);
 extern void computeOffsets (struct b_whirl* w);
 extern void fsetDrumMicWidth (void* d, const float dw);
+extern void fsetHornMicWidth (void* d, const float hw);
 
 #endif /* WHIRL_H */
