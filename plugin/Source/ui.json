@@ -1,18 +1,18 @@
 {
-    "id": "main", "w": 736, "h": 360,
+    "id": "main", "w": 736, "h": 438,
     "components": [
         { "id": "Vibrato Upper", "x": "8", "y": 48, "w": 56, "h": 70 },
         { "id": "Vibrato Lower", "x": "prevR + 8", "y": 48, "w": 56, "h": 70 },
-        { "id": "Vib & Chrs", "x": "prevR + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "Vib & Chrs", "x": 40, "y": 126, "w": 56, "h": 70 },
 
-        { "id": "Upper [1..9]", "x": "prevR + 20,prevR + 2", "y": 48, "w": 9, "h": 70 },
-        { "id": "Pedal [1..2]", "x": "prevR + 20,prevR + 2", "y": 48, "w": 9, "h": 70 },
-        { "id": "Lower [1..9]", "x": "prevR + 20,prevR + 2", "y": 48,  "w": 9, "h": 70 },
+        { "id": "Upper [1..9]", "x": "148,prevR + 2", "y": 48, "w": 18, "h": 148 },
+        { "id": "Pedal [1..2]", "x": "prevR + 20,prevR + 2", "y": 48, "w": 18, "h": 148 },
+        { "id": "Lower [1..9]", "x": "prevR + 20,prevR + 2", "y": 48,  "w": 18, "h": 148 },
 
-        { "id": "Perc", "x": "prevR + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "Perc", "x": 601, "y": 48, "w": 56, "h": 70 },
         { "id": "Perc Volume", "x": "prevR + 8", "y": 48, "w": 56, "h": 70 },
-        { "id": "Perc Decay", "x": "prevR + 8", "y": 48, "w": 56, "h": 70 },
-        { "id": "Perc Harm Sel", "x": "prevR + 8", "y": 48, "w": 56, "h": 70 },
+        { "id": "Perc Decay", "x": 601, "y": 126, "w": 56, "h": 70 },
+        { "id": "Perc Harm Sel", "x": "prevR + 8", "y": 126, "w": 56, "h": 70 },
 
         { "id": "upperKeys", "x": 8, "y": "prevB + 8",  "w": 720, "h": 70 },
         { "id": "lowerKeys", "x": 8, "y": "prevB + 8",  "w": 720, "h": 70 },
@@ -25,6 +25,6 @@
 
         { "id": "Reverb", "x": "prevR + 8", "y": "prevY", "w": 56, "h": 70 },
         { "id": "Volume", "x": "prevR + 8", "y": "prevY", "w": 56, "h": 70 },
-        { "id": "Split Keys", "x": "getX('Perc Harm Sel')", "y": "prevY", "w": 56, "h": 70 }
+        { "id": "Split Keys", "x": "prevR + 8", "y": "prevY", "w": 56, "h": 70 }
     ]
 }

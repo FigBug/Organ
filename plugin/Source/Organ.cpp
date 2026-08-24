@@ -1,18 +1,30 @@
 #include "Organ.h"
 
+#include <locale.h>
+#include <string.h>
+
 extern "C"
 {
 #include "../setBfree/src/state.h"
 #include "../setBfree/src/tonegen.h"
 #include "../setBfree/src/vibrato.h"
 #include "../setBfree/src/midi.h"
+#include "../setBfree/src/cfgParser.h"
 }
 
-Organ::Organ (double sr, int bs)
+Organ::Organ (double sr, int bs, const juce::StringPairArray& config)
     : sampleRate (sr)
 {
     fifo.setSize (2, std::max (1024, bs * 2));
     allocAll();
+
+    // Config must be applied between alloc and init, matching the standalone
+    // app: init consumes the configured values when building its tables
+    LOCALEGUARD_START;
+    for (const auto& key : config.getAllKeys())
+        evaluateConfigKeyValue (&inst, key.toRawUTF8(), config[key].toRawUTF8(), sampleRate);
+    LOCALEGUARD_END;
+
     initAll();
 
     setDrawBars (&inst, 0, upper);
@@ -182,6 +194,135 @@ void Organ::setOverdrive (bool v)
 void Organ::setSplit (bool s)
 {
     split = s;
+}
+
+static bool updateValues (float* cache, std::initializer_list<float> vals)
+{
+    bool changed = false;
+    int i = 0;
+    for (auto v : vals)
+    {
+        if (! juce::approximatelyEqual (cache[i], v))
+        {
+            cache[i] = v;
+            changed = true;
+        }
+        i++;
+    }
+    return changed;
+}
+
+void Organ::setLeslieBypass (bool b)
+{
+    inst.whirl->bypass = b ? 1 : 0;
+}
+
+void Organ::setLeslieSpeeds (float hornSlow, float hornFast, float drumSlow, float drumFast)
+{
+    if (updateValues (lesSpeeds, { hornSlow, hornFast, drumSlow, drumFast }))
+    {
+        inst.whirl->hornRPMslow = hornSlow;
+        inst.whirl->hornRPMfast = hornFast;
+        inst.whirl->drumRPMslow = drumSlow;
+        inst.whirl->drumRPMfast = drumFast;
+        computeRotationSpeeds (inst.whirl);
+
+        // Re-apply the current speed selection so the new targets take effect
+        auto cur = leslie;
+        leslie = -1;
+        if (cur >= 0)
+            setLeslie (cur);
+    }
+}
+
+void Organ::setLeslieDynamics (float hornAcc, float hornDec, float drumAcc, float drumDec)
+{
+    if (updateValues (lesDynamics, { hornAcc, hornDec, drumAcc, drumDec }))
+    {
+        inst.whirl->hornAcc = hornAcc;
+        inst.whirl->hornDec = hornDec;
+        inst.whirl->drumAcc = drumAcc;
+        inst.whirl->drumDec = drumDec;
+    }
+}
+
+void Organ::setLeslieBrakes (float horn, float drum)
+{
+    if (updateValues (lesBrakes, { horn, drum }))
+    {
+        inst.whirl->hnBrakePos = horn;
+        inst.whirl->drBrakePos = drum;
+    }
+}
+
+void Organ::setLeslieLevels (float horn, float leak)
+{
+    if (updateValues (lesLevels, { horn, leak }))
+    {
+        inst.whirl->hornLevel = horn;
+        inst.whirl->leakLevel = leak;
+        inst.whirl->leakage   = leak * horn;
+    }
+}
+
+void Organ::setLeslieWidths (float horn, float drum)
+{
+    if (updateValues (lesWidths, { horn, drum }))
+    {
+        fsetHornMicWidth (inst.whirl, horn);
+        fsetDrumMicWidth (inst.whirl, drum);
+    }
+}
+
+void Organ::setLeslieGeometry (float micDist, float micAngleDeg, float hornRadius, float drumRadius, float hornOffX, float hornOffZ)
+{
+    if (updateValues (lesGeometry, { micDist, micAngleDeg, hornRadius, drumRadius, hornOffX, hornOffZ }))
+    {
+        inst.whirl->micDistCm     = micDist;
+        inst.whirl->micAngle      = 1.0 - micAngleDeg / 180.0;
+        inst.whirl->hornRadiusCm  = hornRadius;
+        inst.whirl->drumRadiusCm  = drumRadius;
+        inst.whirl->hornXOffsetCm = hornOffX;
+        inst.whirl->hornZOffsetCm = hornOffZ;
+        computeOffsets (inst.whirl);
+    }
+}
+
+void Organ::setLeslieFilter (int which, int type, float hz, float q, float gain)
+{
+    if (updateValues (lesFilters[which], { float (type), hz, q, gain }))
+    {
+        switch (which)
+        {
+            case 0:
+                isetHornFilterAType (inst.whirl, type);
+                fsetHornFilterAFrequency (inst.whirl, hz);
+                fsetHornFilterAQ (inst.whirl, q);
+                fsetHornFilterAGain (inst.whirl, gain);
+                break;
+            case 1:
+                isetHornFilterBType (inst.whirl, type);
+                fsetHornFilterBFrequency (inst.whirl, hz);
+                fsetHornFilterBQ (inst.whirl, q);
+                fsetHornFilterBGain (inst.whirl, gain);
+                break;
+            case 2:
+                isetDrumFilterType (inst.whirl, type);
+                fsetDrumFilterFrequency (inst.whirl, hz);
+                fsetDrumFilterQ (inst.whirl, q);
+                fsetDrumFilterGain (inst.whirl, gain);
+                break;
+        }
+    }
+}
+
+void Organ::setReverbInputGain (float g)
+{
+    if (! juce::approximatelyEqual (revInputGain, g))
+    {
+        revInputGain = g;
+        ::setReverbInputGain (inst.reverb, g);
+    }
 }
 
 void Organ::processMidi (juce::MidiBuffer& midi, int pos, int len)
