@@ -3,4 +3,9 @@ rm -Rf "/Library/Audio/Plug-Ins/VST/Organ.vst"
 rm -Rf "/Library/Audio/Plug-Ins/VST3/Organ.vst3"
 rm -Rf "/Library/Audio/Plug-Ins/Components/Organ.component"
 rm -Rf "/Library/Audio/Plug-Ins/CLAP/Organ.clap"
+
+# Wipe the previous shipped factory presets so removed presets from the old
+# version don't linger. User content lives under ~/Library and is left alone.
+rm -Rf "/Library/Audio/Presets/SocaLabs/Organ/Presets"
+
 exit 0

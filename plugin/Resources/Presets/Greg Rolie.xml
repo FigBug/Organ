@@ -1,0 +1,18 @@
+<state name="Greg Rolie" author="setBfree" tags="factory">
+  <state/>
+  <param uid="upper1" val="-8.0"/>
+  <param uid="upper2" val="-8.0"/>
+  <param uid="upper3" val="-8.0"/>
+  <param uid="upper4" val="-8.0"/>
+  <param uid="upper5" val="-8.0"/>
+  <param uid="upper6" val="-6.0"/>
+  <param uid="upper7" val="-6.0"/>
+  <param uid="upper8" val="-6.0"/>
+  <param uid="upper9" val="-6.0"/>
+  <param uid="prec" val="1.0"/>
+  <param uid="precVol" val="1.0"/>
+  <param uid="precDecay" val="1.0"/>
+  <param uid="precHarmSel" val="0.0"/>
+  <param uid="vibratoChorus" val="5.0"/>
+  <param uid="vibratoUpper" val="1.0"/>
+</state>

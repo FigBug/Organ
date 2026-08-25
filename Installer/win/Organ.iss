@@ -55,6 +55,7 @@ Name: english; MessagesFile: compiler:Default.isl
 Name: "vst";       Description: "VST plug-in";   Types: full custom; Flags: checkablealone
 Name: "vst3";      Description: "VST3 plug-in";  Types: full custom; Flags: checkablealone
 Name: "clap";      Description: "CLAP plug-in";  Types: full custom; Flags: checkablealone
+Name: "resources"; Description: "Factory presets"; Types: full custom; Flags: fixed
 Name: "crashreporter"; Description: "Crash reporter (shared component, only updated if newer)"; Types: full custom; Flags: checkablealone
 
 
@@ -62,12 +63,15 @@ Name: "crashreporter"; Description: "Crash reporter (shared component, only upda
 Type: files;          Name: "{commoncf64}\VST2\Organ.dll";   Components: vst
 Type: filesandordirs; Name: "{commoncf64}\VST3\Organ.vst3"; Components: vst3
 Type: files;          Name: "{commoncf64}\CLAP\Organ.clap"; Components: clap
+Type: filesandordirs; Name: "{commonappdata}\SocaLabs\Organ\Presets"; Components: resources
 
 
 [Files]
 Source: "bin\VST\Organ.dll";    DestDir: "{commoncf64}\VST2";                     Flags: ignoreversion overwritereadonly; Components: vst
 Source: "bin\VST3\Organ.vst3\*"; DestDir: "{commoncf64}\VST3\Organ.vst3\"; Flags: ignoreversion overwritereadonly recursesubdirs; Components: vst3
 Source: "bin\CLAP\Organ.clap";   DestDir: "{commoncf64}\CLAP";                    Flags: ignoreversion overwritereadonly; Components: clap
+; Factory presets → C:\ProgramData\SocaLabs\Organ\Presets
+Source: "..\..\plugin\Resources\Presets\*.xml"; DestDir: "{commonappdata}\SocaLabs\Organ\Presets\"; Flags: ignoreversion; Components: resources
 ; CrashReporter app → C:\Program Files\Rabien Software\Crash Reporter, plus this
 ; plugin's registration JSON → C:\ProgramData\Rabien Software\Crash Reporter\Plugins.
 ; Shared across plugins: the app is only updated if newer and never removed on

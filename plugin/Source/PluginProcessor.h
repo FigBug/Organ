@@ -15,6 +15,9 @@ public:
     void stateUpdated() override;
     void updateState() override;
 
+    juce::File getProgramDirectory() override;
+    juce::Array<juce::File> getFactoryProgramDirectories() override;
+
     //==============================================================================
     void reset() override;
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;

@@ -89,6 +89,11 @@ if [ "$PLATFORM" = "macOS" ]; then
   cp -RL "$ART_DIR/AU/$PLUGIN.component" "$STAGE/au/"
   cp -RL "$ART_DIR/CLAP/$PLUGIN.clap"    "$STAGE/clap/"
 
+  # Resources component: factory presets
+  mkdir -p "$STAGE/resources/Library/Audio/Presets/$VENDOR/$PLUGIN/Presets"
+  cp "$PROJECT_ROOT/plugin/Resources/Presets/"*.xml "$STAGE/resources/Library/Audio/Presets/$VENDOR/$PLUGIN/Presets/"
+  find "$STAGE/resources" -name ".DS_Store" -delete
+
   # Strip symbols from the shipped binaries so end-user crash logs are NOT
   # symbolicated locally by macOS — the server symbolicates them from the dSYMs
   # (built below from the unstripped products in $ART_DIR). strip preserves the
@@ -111,6 +116,9 @@ if [ "$PLATFORM" = "macOS" ]; then
   pkgbuild --root "$STAGE/vst3" --install-location "/Library/Audio/Plug-Ins/VST3"       --identifier "${BUNDLE_BASE}.vst3.pkg" --version "$VERSION" "$PKG_DIR/vst3.pkg"
   pkgbuild --root "$STAGE/au"   --install-location "/Library/Audio/Plug-Ins/Components" --identifier "${BUNDLE_BASE}.au.pkg"   --version "$VERSION" "$PKG_DIR/au.pkg"
   pkgbuild --root "$STAGE/clap" --install-location "/Library/Audio/Plug-Ins/CLAP"       --identifier "${BUNDLE_BASE}.clap.pkg" --version "$VERSION" "$PKG_DIR/clap.pkg"
+
+  pkgbuild --root "$STAGE/resources" --install-location "/" --identifier "${BUNDLE_BASE}.resources.pkg" --version "$VERSION" \
+           --scripts "$PROJECT_ROOT/Installer/macOS/scripts" "$PKG_DIR/resources.pkg"
 
   # CrashReporter component: latest signed CrashReporter.app + this plugin's
   # registration JSON. Staged under .incoming and promoted by the postinstall

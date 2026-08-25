@@ -73,6 +73,46 @@ static gin::ProcessorOptions createProcessorOptions()
         .withMidiLearn();
 }
 
+//==============================================================================
+namespace
+{
+    juce::File userResourceRoot()
+    {
+       #if JUCE_MAC
+        return juce::File::getSpecialLocation (juce::File::userHomeDirectory)
+                  .getChildFile ("Library/Audio/Presets/SocaLabs/Organ");
+       #else
+        return juce::File::getSpecialLocation (juce::File::userApplicationDataDirectory)
+                  .getChildFile ("SocaLabs/Organ");
+       #endif
+    }
+
+    juce::File systemResourceRoot()
+    {
+       #if JUCE_MAC
+        return juce::File ("/Library/Audio/Presets/SocaLabs/Organ");
+       #elif JUCE_WINDOWS
+        return juce::File::getSpecialLocation (juce::File::commonApplicationDataDirectory)
+                  .getChildFile ("SocaLabs/Organ");
+       #else
+        return juce::File ("/usr/share/SocaLabs/Organ");
+       #endif
+    }
+
+    // Pre-installer location: gin's default getProgramDirectory() chose a
+    // "programs" folder under devId.
+    juce::File legacyUserProgramDirectory()
+    {
+       #if JUCE_MAC
+        return juce::File::getSpecialLocation (juce::File::userApplicationDataDirectory)
+                  .getChildFile ("Application Support/com.socalabs/Organ/programs");
+       #else
+        return juce::File::getSpecialLocation (juce::File::userApplicationDataDirectory)
+                  .getChildFile ("com.socalabs/Organ/programs");
+       #endif
+    }
+}
+
 // If the shared CrashReporter is installed, launch it once per process (on the
 // first plugin instance) so it can scan and upload any crash from last session.
 static void launchCrashReporterOnce()
@@ -131,8 +171,40 @@ OrganAudioProcessor::OrganAudioProcessor()
 
     addBacksideParams();
 
+    // One-time migration of any user presets from the pre-installer location.
+    // Factory presets live in systemResourceRoot()/Presets (shipped by the
+    // installer) and are surfaced via getFactoryProgramDirectories(). User
+    // saves go to userResourceRoot()/Presets.
+    {
+        auto oldDir = legacyUserProgramDirectory();
+        auto newDir = userResourceRoot().getChildFile ("Presets");
+        if (oldDir.isDirectory()
+            && newDir.findChildFiles (juce::File::findFiles, false, "*.xml").isEmpty())
+        {
+            if (! newDir.isDirectory())
+                newDir.createDirectory();
+            for (auto f : oldDir.findChildFiles (juce::File::findFiles, false, "*.xml"))
+                f.copyFileTo (newDir.getChildFile (f.getFileName()));
+        }
+    }
+
     midiOut.ensureSize (1024);
     init();
+}
+
+juce::File OrganAudioProcessor::getProgramDirectory()
+{
+    auto dir = userResourceRoot().getChildFile ("Presets");
+
+    if (! dir.isDirectory())
+        dir.createDirectory();
+
+    return dir;
+}
+
+juce::Array<juce::File> OrganAudioProcessor::getFactoryProgramDirectories()
+{
+    return { systemResourceRoot().getChildFile ("Presets") };
 }
 
 OrganAudioProcessor::~OrganAudioProcessor()
